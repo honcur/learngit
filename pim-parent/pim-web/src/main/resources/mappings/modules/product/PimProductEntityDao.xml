@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sinux.modules.product.dao.PimProductEntityDao">
+    
+	<sql id="baseColumnList">
+						a.id AS "id",
+				a.entity_number AS "entityNumber",
+				a.entity_state AS "entityState",
+				a.batch_number AS "batchNumber",
+				a.warehouse_id AS "warehouseId",
+				a.software_version_id AS "softwareVersionId",
+				a.product_id AS "productId",
+				a.product_number AS "productNumber",
+				a.product_name AS "productName",
+				a.description AS "description",
+				a.physical_warehouse AS "physicalWarehouse",
+				a.process_state AS "processState",
+				a.create_by AS "createById",
+				a.create_date AS "createDate",
+				a.update_by AS "updateById",
+				a.update_date AS "updateDate",
+				a.ownership_id AS "ownershipId",
+				a.update_ownership_date AS "updateOwnershipDate",
+				a.is_attached AS "isAttached"
+	</sql>
+	
+	<sql id="insertColumnList">
+						id,
+				entity_number,
+				entity_state,
+				batch_number,
+				warehouse_id,
+				software_version_id,
+				product_id,
+				product_number,
+				product_name,
+				description,
+				physical_warehouse,
+				process_state,
+				create_by,
+				create_date,
+				update_by,
+				update_date,
+				ownership_id,
+				update_ownership_date,
+				is_attached
+	</sql>
+	
+	
+	<sql id="sql_of_where">
+		where 1=1
+				<if test="id != null"> 
+				AND a.id = #{id}
+				</if>
+				<if test="entityNumber != null"> 
+				AND a.entity_number = #{entityNumber}
+				</if>
+				<if test="entityState != null"> 
+				AND a.entity_state = #{entityState}
+				</if>
+				<if test="batchNumber != null"> 
+				AND a.batch_number = #{batchNumber}
+				</if>
+				<if test="warehouseId != null"> 
+				AND a.warehouse_id = #{warehouseId}
+				</if>
+				<if test="softwareVersionId != null"> 
+				AND a.software_version_id = #{softwareVersionId}
+				</if>
+				<if test="productId != null"> 
+				AND a.product_id = #{productId}
+				</if>
+				<if test="productNumber != null"> 
+				AND a.product_number = #{productNumber}
+				</if>
+				<if test="productName != null"> 
+				AND a.product_name = #{productName}
+				</if>
+				<if test="description != null"> 
+				AND a.description = #{description}
+				</if>
+				<if test="physicalWarehouse != null"> 
+				AND a.physical_warehouse = #{physicalWarehouse}
+				</if>
+				<if test="processState != null"> 
+				AND a.process_state = #{processState}
+				</if>
+				<if test="createById != null"> 
+				AND a.create_by = #{createById}
+				</if>
+				<if test="createDate != null"> 
+				AND a.create_date = #{createDate}
+				</if>
+				<if test="updateById != null"> 
+				AND a.update_by = #{updateById}
+				</if>
+				<if test="updateDate != null"> 
+				AND a.update_date = #{updateDate}
+				</if>
+				<if test="ownershipId != null"> 
+				AND a.ownership_id = #{ownershipId}
+				</if>
+				<if test="updateOwnershipDate != null"> 
+				AND a.update_ownership_date = #{updateOwnershipDate}
+				</if>
+				<if test="isAttached != null"> 
+				AND a.is_attached = #{isAttached}
+				</if>
+				<if test="keywords !=null and keywords !=''">
+				AND ( a.product_number LIKE #{keywords} OR a.product_name LIKE #{keywords} OR a.entity_number LIKE #{keywords} )
+				</if>
+	</sql>
+	
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+        	AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+            	#{id}
+            </foreach>
+        </if>
+	</sql>
+	
+	<select id="select" parameterType="com.sinux.modules.product.entity.PimProductEntity" resultType="com.sinux.modules.product.entity.PimProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_product_entity a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	
+	<select id="selectByExt" parameterType="com.sinux.modules.product.entity.ext.PimProductEntityExt" resultType="com.sinux.modules.product.entity.PimProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_product_entity a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="com.sinux.modules.product.entity.PimProductEntity">
+		INSERT INTO pim_product_entity
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+					id,
+				</if>
+				<if test="entityNumber != null">
+					entity_number,
+				</if>
+				<if test="entityState != null">
+					entity_state,
+				</if>
+				<if test="batchNumber != null">
+					batch_number,
+				</if>
+				<if test="warehouseId != null">
+					warehouse_id,
+				</if>
+				<if test="softwareVersionId != null">
+					software_version_id,
+				</if>
+				<if test="productId != null">
+					product_id,
+				</if>
+				<if test="productNumber != null">
+					product_number,
+				</if>
+				<if test="productName != null">
+					product_name,
+				</if>
+				<if test="description != null">
+					description,
+				</if>
+				<if test="physicalWarehouse != null">
+					physical_warehouse,
+				</if>
+				<if test="processState != null">
+					process_state,
+				</if>
+				<if test="createById != null">
+					create_by,
+				</if>
+				<if test="createDate != null">
+					create_date,
+				</if>
+				<if test="updateById != null">
+					update_by,
+				</if>
+				<if test="updateDate != null">
+					update_date,
+				</if>
+				<if test="ownershipId != null">
+					ownership_id,
+				</if>
+				<if test="updateOwnershipDate != null">
+					update_ownership_date,
+				</if>
+				<if test="isAttached != null">
+					is_attached,
+				</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+			   		#{id},
+				</if>
+				<if test="entityNumber != null">
+			   		#{entityNumber},
+				</if>
+				<if test="entityState != null">
+			   		#{entityState},
+				</if>
+				<if test="batchNumber != null">
+			   		#{batchNumber},
+				</if>
+				<if test="warehouseId != null">
+			   		#{warehouseId},
+				</if>
+				<if test="softwareVersionId != null">
+			   		#{softwareVersionId},
+				</if>
+				<if test="productId != null">
+			   		#{productId},
+				</if>
+				<if test="productNumber != null">
+			   		#{productNumber},
+				</if>
+				<if test="productName != null">
+			   		#{productName},
+				</if>
+				<if test="description != null">
+			   		#{description},
+				</if>
+				<if test="physicalWarehouse != null">
+			   		#{physicalWarehouse},
+				</if>
+				<if test="processState != null">
+			   		#{processState},
+				</if>
+				<if test="createById != null">
+			   		#{createById},
+				</if>
+				<if test="createDate != null">
+			   		#{createDate},
+				</if>
+				<if test="updateById != null">
+			   		#{updateById},
+				</if>
+				<if test="updateDate != null">
+			   		#{updateDate},
+				</if>
+				<if test="ownershipId != null">
+			   		#{ownershipId},
+				</if>
+				<if test="updateOwnershipDate != null">
+			   		#{updateOwnershipDate},
+				</if>
+				<if test="isAttached != null">
+			   		#{isAttached},
+				</if>
+		</trim>
+	</insert>
+	
+	<insert id="insertBatch"  parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_product_entity
+		(
+		<include refid="insertColumnList"/>
+		)
+		<if test="dbName == 'mysql'">
+		values
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" separator=",">
+			(	
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.entityNumber != null">,#{item.entityNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.entityState != null">,#{item.entityState}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.batchNumber != null">,#{item.batchNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseId != null">,#{item.warehouseId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwareVersionId != null">,#{item.softwareVersionId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productId != null">,#{item.productId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productNumber != null">,#{item.productNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productName != null">,#{item.productName}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.description != null">,#{item.description}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.physicalWarehouse != null">,#{item.physicalWarehouse}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.processState != null">,#{item.processState}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.ownershipId != null">,#{item.ownershipId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateOwnershipDate != null">,#{item.updateOwnershipDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.isAttached != null">,#{item.isAttached}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+			)
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" separator="union all">
+				(select 
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.entityNumber != null">,#{item.entityNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.entityState != null">,#{item.entityState}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.batchNumber != null">,#{item.batchNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseId != null">,#{item.warehouseId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwareVersionId != null">,#{item.softwareVersionId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productId != null">,#{item.productId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productNumber != null">,#{item.productNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productName != null">,#{item.productName}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.description != null">,#{item.description}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.physicalWarehouse != null">,#{item.physicalWarehouse}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.processState != null">,#{item.processState}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.ownershipId != null">,#{item.ownershipId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateOwnershipDate != null">,#{item.updateOwnershipDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.isAttached != null">,#{item.isAttached}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+				FROM DUAL
+				)
+			</foreach>
+			</if>
+		</if>
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimProductEntity">
+		update pim_product_entity
+		<set>
+					<if test="entityNumber != null" >
+	             		entity_number = #{entityNumber},
+	            	</if>
+					<if test="entityState != null" >
+	             		entity_state = #{entityState},
+	            	</if>
+					<if test="batchNumber != null" >
+	             		batch_number = #{batchNumber},
+	            	</if>
+					<if test="warehouseId != null" >
+	             		warehouse_id = #{warehouseId},
+	            	</if>
+					<if test="softwareVersionId != null" >
+	             		software_version_id = #{softwareVersionId},
+	            	</if>
+					<if test="productId != null" >
+	             		product_id = #{productId},
+	            	</if>
+					<if test="productNumber != null" >
+	             		product_number = #{productNumber},
+	            	</if>
+					<if test="productName != null" >
+	             		product_name = #{productName},
+	            	</if>
+					<if test="description != null" >
+	             		description = #{description},
+	            	</if>
+					<if test="physicalWarehouse != null" >
+	             		physical_warehouse = #{physicalWarehouse},
+	            	</if>
+					<if test="processState != null" >
+	             		process_state = #{processState},
+	            	</if>
+					<if test="createById != null" >
+	             		create_by = #{createById},
+	            	</if>
+					<if test="createDate != null" >
+	             		create_date = #{createDate},
+	            	</if>
+					<if test="updateById != null" >
+	             		update_by = #{updateById},
+	            	</if>
+					<if test="updateDate != null" >
+	             		update_date = #{updateDate},
+	            	</if>
+					<if test="ownershipId != null" >
+	             		ownership_id = #{ownershipId},
+	            	</if>
+					<if test="updateOwnershipDate != null" >
+	             		update_ownership_date = #{updateOwnershipDate},
+	            	</if>
+					<if test="isAttached != null" >
+	             		is_attached = #{isAttached},
+	            	</if>
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateAllByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimProductEntity">
+		update pim_product_entity
+		<set>
+             		entity_number = #{entityNumber},
+             		entity_state = #{entityState},
+             		batch_number = #{batchNumber},
+             		warehouse_id = #{warehouseId},
+             		software_version_id = #{softwareVersionId},
+             		product_id = #{productId},
+             		product_number = #{productNumber},
+             		product_name = #{productName},
+             		description = #{description},
+             		physical_warehouse = #{physicalWarehouse},
+             		process_state = #{processState},
+             		create_by = #{createById},
+             		create_date = #{createDate},
+             		update_by = #{updateById},
+             		update_date = #{updateDate},
+             		ownership_id = #{ownershipId},
+             		update_ownership_date = #{updateOwnershipDate},
+             		is_attached = #{isAttached},
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateBatchByPrimaryKey"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_product_entity
+			<set>
+						<if test="item.entityNumber != null" >
+	             			entity_number = #{item.entityNumber},
+	            		</if>
+						<if test="item.entityState != null" >
+	             			entity_state = #{item.entityState},
+	            		</if>
+						<if test="item.batchNumber != null" >
+	             			batch_number = #{item.batchNumber},
+	            		</if>
+						<if test="item.warehouseId != null" >
+	             			warehouse_id = #{item.warehouseId},
+	            		</if>
+						<if test="item.softwareVersionId != null" >
+	             			software_version_id = #{item.softwareVersionId},
+	            		</if>
+						<if test="item.productId != null" >
+	             			product_id = #{item.productId},
+	            		</if>
+						<if test="item.productNumber != null" >
+	             			product_number = #{item.productNumber},
+	            		</if>
+						<if test="item.productName != null" >
+	             			product_name = #{item.productName},
+	            		</if>
+						<if test="item.description != null" >
+	             			description = #{item.description},
+	            		</if>
+						<if test="item.physicalWarehouse != null" >
+	             			physical_warehouse = #{item.physicalWarehouse},
+	            		</if>
+						<if test="item.processState != null" >
+	             			process_state = #{item.processState},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+						<if test="item.ownershipId != null" >
+	             			ownership_id = #{item.ownershipId},
+	            		</if>
+						<if test="item.updateOwnershipDate != null" >
+	             			update_ownership_date = #{item.updateOwnershipDate},
+	            		</if>
+						<if test="item.isAttached != null" >
+	             			is_attached = #{item.isAttached},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_product_entity
+			<set>
+						<if test="item.entityNumber != null" >
+	             			entity_number = #{item.entityNumber},
+	            		</if>
+						<if test="item.entityState != null" >
+	             			entity_state = #{item.entityState},
+	            		</if>
+						<if test="item.batchNumber != null" >
+	             			batch_number = #{item.batchNumber},
+	            		</if>
+						<if test="item.warehouseId != null" >
+	             			warehouse_id = #{item.warehouseId},
+	            		</if>
+						<if test="item.softwareVersionId != null" >
+	             			software_version_id = #{item.softwareVersionId},
+	            		</if>
+						<if test="item.productId != null" >
+	             			product_id = #{item.productId},
+	            		</if>
+						<if test="item.productNumber != null" >
+	             			product_number = #{item.productNumber},
+	            		</if>
+						<if test="item.productName != null" >
+	             			product_name = #{item.productName},
+	            		</if>
+						<if test="item.description != null" >
+	             			description = #{item.description},
+	            		</if>
+						<if test="item.physicalWarehouse != null" >
+	             			physical_warehouse = #{item.physicalWarehouse},
+	            		</if>
+						<if test="item.processState != null" >
+	             			process_state = #{item.processState},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+						<if test="item.ownershipId != null" >
+	             			ownership_id = #{item.ownershipId},
+	            		</if>
+						<if test="item.updateOwnershipDate != null" >
+	             			update_ownership_date = #{item.updateOwnershipDate},
+	            		</if>
+						<if test="item.isAttached != null" >
+	             			is_attached = #{item.isAttached},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<update id="deleteByLogic" parameterType="com.sinux.modules.product.entity.PimProductEntity">
+		update pim_product_entity set del_flag = '1' where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="deleteBatchByLogic"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_product_entity set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_product_entity set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<delete id="deleteByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimProductEntity">
+		delete from pim_product_entity where 1=1
+				and id = #{id}
+    </delete>
+    
+    <delete id="deleteBatchByPrimaryKey" parameterType="java.util.List">
+		delete from pim_product_entity where 
+		<foreach collection="list" item="item" index="index" separator="or">
+		(
+				id = #{item.id}
+		)
+		</foreach>
+    </delete>
+	<select id="selectByEntityNumber"  resultType="long">
+        select count(*) from pim_product_entity where entity_number = #{entityNumber} 
+        <if test="excludeId != null ">
+        	AND id <![CDATA[ <> ]]> #{excludeId}
+        </if>
+         ORDER BY create_date ASC
+    </select>
+</mapper>

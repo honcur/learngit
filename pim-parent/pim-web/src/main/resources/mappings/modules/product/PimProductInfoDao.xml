@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.sinux.modules.product.dao.PimProductInfoDao">
+
+	<sql id="baseColumnList">
+		a.id AS "id",
+		a.product_name AS "productName",
+		a.product_type_id AS "productTypeId",
+		a.category_id AS "categoryId",
+		a.product_number AS "productNumber",
+		a.product_code AS "productCode",
+		a.manufacturer AS "manufacturer",
+		a.is_attached AS "isAttached",
+		a.description AS "description",
+		a.process_state AS "processState",
+		a.create_by AS "createById",
+		a.create_date AS "createDate",
+		a.update_by
+		AS "updateById",
+		a.update_date AS "updateDate",
+		a.product_source AS
+		"productSource",
+		a.graph_number AS "graphNumber"
+	</sql>
+
+	<sql id="insertColumnList">
+		id,
+		product_name,
+		product_type_id,
+		category_id,
+		product_number,
+		product_code,
+		manufacturer,
+		is_attached,
+		description,
+		process_state,
+		create_by,
+		create_date,
+		update_by,
+		update_date,
+		product_source,
+		graph_number
+	</sql>
+
+
+	<sql id="sql_of_where">
+		where 1=1
+		<if test="id != null">
+			AND a.id = #{id}
+		</if>
+		<if test="productName != null">
+			AND a.product_name = #{productName}
+		</if>
+		<if test="productTypeId != null">
+			AND a.product_type_id = #{productTypeId}
+		</if>
+		<if test="categoryId != null">
+			AND a.category_id = #{categoryId}
+		</if>
+		<if test="productNumber != null">
+			AND a.product_number = #{productNumber}
+		</if>
+		<if test="productCode != null">
+			AND a.product_code = #{productCode}
+		</if>
+		<if test="manufacturer != null">
+			AND a.manufacturer = #{manufacturer}
+		</if>
+		<if test="isAttached != null">
+			AND a.is_attached = #{isAttached}
+		</if>
+		<if test="description != null">
+			AND a.description = #{description}
+		</if>
+		<if test="processState != null">
+			AND a.process_state = #{processState}
+		</if>
+		<if test="createById != null">
+			AND a.create_by = #{createById}
+		</if>
+		<if test="createDate != null">
+			AND a.create_date = #{createDate}
+		</if>
+		<if test="updateById != null">
+			AND a.update_by = #{updateById}
+		</if>
+		<if test="updateDate != null">
+			AND a.update_date = #{updateDate}
+		</if>
+		<if test="productSource != null">
+			AND a.product_source = #{productSource}
+		</if>
+		<if test="graphNumber != null">
+			AND a.graph_number = #{graphNumber}
+		</if>
+	</sql>
+
+	<!-- 自定义的延迟查询产品及其对应的产品类 -->
+	<resultMap
+		type="com.sinux.modules.product.entity.PimProductInfo"
+		id="attachmentResult">
+		<id column="ID" property="id" />
+		<result column="PRODUCT_NAME" property="productName" />
+		<result column="PRODUCT_NUMBER" property="productNumber" />
+		<result column="PRODUCT_CODE" property="productCode" />
+		<collection property="typeNames" column="id"
+			javaType="java.util.List" select="findTypesByProductId" />
+	</resultMap>
+	<select id="findTypesByProductId" resultType="java.lang.String">
+		SELECT b.type_name
+		FROM PIM_PRODUCT_INFO_TYPE a LEFT JOIN PIM_PRODUCT_TYPE b ON
+		a.TYPE_ID=b.ID WHERE a.PRODUCT_ID =#{id}
+	</select>
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+			AND a.id IN
+			<foreach collection="ids" item="id" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</if>
+	</sql>
+
+	<select id="select"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo"
+		resultType="com.sinux.modules.product.entity.PimProductInfo">
+		SELECT
+		<include refid="baseColumnList" />
+		FROM pim_product_info a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+
+
+	<select id="selectByExt"
+		parameterType="com.sinux.modules.product.entity.ext.PimProductInfoExt"
+		resultType="com.sinux.modules.product.entity.PimProductInfo">
+		SELECT
+		<include refid="baseColumnList" />
+		FROM pim_product_info a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+
+	<insert id="insert"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo">
+		INSERT INTO pim_product_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="productName != null">
+				product_name,
+			</if>
+			<if test="productTypeId != null">
+				product_type_id,
+			</if>
+			<if test="categoryId != null">
+				category_id,
+			</if>
+			<if test="productNumber != null">
+				product_number,
+			</if>
+			<if test="productCode != null">
+				product_code,
+			</if>
+			<if test="manufacturer != null">
+				manufacturer,
+			</if>
+			<if test="isAttached != null">
+				is_attached,
+			</if>
+			<if test="description != null">
+				description,
+			</if>
+			<if test="processState != null">
+				process_state,
+			</if>
+			<if test="createById != null">
+				create_by,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+			<if test="updateById != null">
+				update_by,
+			</if>
+			<if test="updateDate != null">
+				update_date,
+			</if>
+			<if test="productSource != null">
+				product_source,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="productName != null">
+				#{productName},
+			</if>
+			<if test="productTypeId != null">
+				#{productTypeId},
+			</if>
+			<if test="categoryId != null">
+				#{categoryId},
+			</if>
+			<if test="productNumber != null">
+				#{productNumber},
+			</if>
+			<if test="productCode != null">
+				#{productCode},
+			</if>
+			<if test="manufacturer != null">
+				#{manufacturer},
+			</if>
+			<if test="isAttached != null">
+				#{isAttached},
+			</if>
+			<if test="description != null">
+				#{description},
+			</if>
+			<if test="processState != null">
+				#{processState},
+			</if>
+			<if test="createById != null">
+				#{createById},
+			</if>
+			<if test="createDate != null">
+				#{createDate},
+			</if>
+			<if test="updateById != null">
+				#{updateById},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate},
+			</if>
+			<if test="productSource != null">
+				#{productSource},
+			</if>
+		</trim>
+	</insert>
+
+	<insert id="insertBatch"
+		parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_product_info
+		(
+		<include refid="insertColumnList" />
+		)
+		<if test="dbName == 'mysql'">
+			values
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" separator=",">
+					(
+					<choose>
+						<when test="item.id != null">#{item.id}</when>
+						<otherwise>null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productName != null">,#{item.productName}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productTypeId != null">,#{item.productTypeId}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.categoryId != null">,#{item.categoryId}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productNumber != null">,#{item.productNumber}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productCode != null">,#{item.productCode}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.manufacturer != null">,#{item.manufacturer}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.isAttached != null">,#{item.isAttached}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.description != null">,#{item.description}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.processState != null">,#{item.processState}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.createById != null">,#{item.createById}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.createDate != null">,#{item.createDate}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.updateById != null">,#{item.updateById}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.updateDate != null">,#{item.updateDate}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productSource != null">,#{item.productSource}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					)
+				</foreach>
+			</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item"
+					separator="union all">
+					(select
+					<choose>
+						<when test="item.id != null">#{item.id}</when>
+						<otherwise>null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productName != null">,#{item.productName}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productTypeId != null">,#{item.productTypeId}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.categoryId != null">,#{item.categoryId}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productNumber != null">,#{item.productNumber}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productCode != null">,#{item.productCode}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.manufacturer != null">,#{item.manufacturer}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.isAttached != null">,#{item.isAttached}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.description != null">,#{item.description}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.processState != null">,#{item.processState}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.createById != null">,#{item.createById}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.createDate != null">,#{item.createDate}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.updateById != null">,#{item.updateById}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.updateDate != null">,#{item.updateDate}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.productSource != null">,#{item.productSource}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					FROM DUAL
+					)
+				</foreach>
+			</if>
+		</if>
+	</insert>
+
+	<update id="updateByPrimaryKey"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo">
+		update pim_product_info
+		<set>
+			<if test="productName != null">
+				product_name = #{productName},
+			</if>
+			<if test="productTypeId != null">
+				product_type_id = #{productTypeId},
+			</if>
+			<if test="categoryId != null">
+				category_id = #{categoryId},
+			</if>
+			<if test="productNumber != null">
+				product_number = #{productNumber},
+			</if>
+			<if test="productCode != null">
+				product_code = #{productCode},
+			</if>
+			<if test="manufacturer != null">
+				manufacturer = #{manufacturer},
+			</if>
+			<if test="isAttached != null">
+				is_attached = #{isAttached},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="processState != null">
+				process_state = #{processState},
+			</if>
+			<if test="createById != null">
+				create_by = #{createById},
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate},
+			</if>
+			<if test="updateById != null">
+				update_by = #{updateById},
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate},
+			</if>
+			<if test="productSource != null">
+				product_source = #{productSource},
+			</if>
+		</set>
+		where 1=1
+		and id = #{id}
+	</update>
+
+	<update id="updateAllByPrimaryKey"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo">
+		update pim_product_info
+		<set>
+			product_name = #{productName},
+			product_type_id = #{productTypeId},
+			category_id = #{categoryId},
+			product_number = #{productNumber},
+			product_code = #{productCode},
+			manufacturer = #{manufacturer},
+			is_attached = #{isAttached},
+			description = #{description},
+			process_state = #{processState},
+			create_by = #{createById},
+			create_date = #{createDate},
+			update_by = #{updateById},
+			update_date =
+			#{updateDate},
+			product_source = #{productSource},
+		</set>
+		where 1=1
+		and id = #{id}
+	</update>
+
+	<update id="updateBatchByPrimaryKey"
+		parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="" close="" separator=";">
+					update pim_product_info
+					<set>
+						<if test="item.productName != null">
+							product_name = #{item.productName},
+						</if>
+						<if test="item.productTypeId != null">
+							product_type_id = #{item.productTypeId},
+						</if>
+						<if test="item.categoryId != null">
+							category_id = #{item.categoryId},
+						</if>
+						<if test="item.productNumber != null">
+							product_number = #{item.productNumber},
+						</if>
+						<if test="item.productCode != null">
+							product_code = #{item.productCode},
+						</if>
+						<if test="item.manufacturer != null">
+							manufacturer = #{item.manufacturer},
+						</if>
+						<if test="item.isAttached != null">
+							is_attached = #{item.isAttached},
+						</if>
+						<if test="item.description != null">
+							description = #{item.description},
+						</if>
+						<if test="item.processState != null">
+							process_state = #{item.processState},
+						</if>
+						<if test="item.createById != null">
+							create_by = #{item.createById},
+						</if>
+						<if test="item.createDate != null">
+							create_date = #{item.createDate},
+						</if>
+						<if test="item.updateById != null">
+							update_by = #{item.updateById},
+						</if>
+						<if test="item.updateDate != null">
+							update_date = #{item.updateDate},
+						</if>
+						<if test="item.productSource != null">
+							product_source = #{item.productSource},
+						</if>
+					</set>
+					where 1=1
+					and id = #{item.id}
+				</foreach>
+			</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="begin" close=";end;" separator=";">
+					update pim_product_info
+					<set>
+						<if test="item.productName != null">
+							product_name = #{item.productName},
+						</if>
+						<if test="item.productTypeId != null">
+							product_type_id = #{item.productTypeId},
+						</if>
+						<if test="item.categoryId != null">
+							category_id = #{item.categoryId},
+						</if>
+						<if test="item.productNumber != null">
+							product_number = #{item.productNumber},
+						</if>
+						<if test="item.productCode != null">
+							product_code = #{item.productCode},
+						</if>
+						<if test="item.manufacturer != null">
+							manufacturer = #{item.manufacturer},
+						</if>
+						<if test="item.isAttached != null">
+							is_attached = #{item.isAttached},
+						</if>
+						<if test="item.description != null">
+							description = #{item.description},
+						</if>
+						<if test="item.processState != null">
+							process_state = #{item.processState},
+						</if>
+						<if test="item.createById != null">
+							create_by = #{item.createById},
+						</if>
+						<if test="item.createDate != null">
+							create_date = #{item.createDate},
+						</if>
+						<if test="item.updateById != null">
+							update_by = #{item.updateById},
+						</if>
+						<if test="item.updateDate != null">
+							update_date = #{item.updateDate},
+						</if>
+						<if test="item.productSource != null">
+							product_source = #{item.productSource},
+						</if>
+					</set>
+					where 1=1
+					and id = #{item.id}
+				</foreach>
+			</if>
+		</if>
+	</update>
+
+	<update id="deleteByLogic"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo">
+		update pim_product_info set del_flag = '1' where 1=1
+		and
+		id = #{id}
+	</update>
+
+	<update id="deleteBatchByLogic"
+		parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="" close="" separator=";">
+					update pim_product_info set del_flag =
+					'1' where 1=1
+					and id = #{item.id}
+				</foreach>
+			</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="begin" close=";end;" separator=";">
+					update pim_product_info set
+					del_flag = '1' where 1=1
+					and id = #{item.id}
+				</foreach>
+			</if>
+		</if>
+	</update>
+
+	<delete id="deleteByPrimaryKey"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo">
+		delete from pim_product_info where 1=1
+		and id = #{id}
+	</delete>
+
+	<delete id="deleteBatchByPrimaryKey"
+		parameterType="java.util.List">
+		delete from pim_product_info where
+		<foreach collection="list" item="item" index="index"
+			separator="or">
+			(
+			id = #{item.id}
+			)
+		</foreach>
+	</delete>
+
+	<!-- 查询名称或者编码是否重复 -->
+	<!-- ygy -->
+	<select id="selectWithNameAndNum" parameterType="java.util.Map"
+		resultType="com.sinux.modules.product.entity.PimProductInfo">
+		SELECT
+		<include refid="baseColumnList" />
+		FROM pim_product_info a
+		WHERE
+		product_name = #{productName}
+		OR
+		product_number = #{productNumber}
+	</select>
+
+	<!-- 判断产品信息是否来自于ERP -->
+	<!-- ygy -->
+	<select id="isOriginateFromErp" parameterType="java.util.Map"
+		resultType="com.sinux.modules.product.entity.PimProductInfo">
+		SELECT
+		<include refid="baseColumnList" />
+		FROM pim_product_info a
+		WHERE
+		id = #{id}
+		AND
+		product_source =
+		#{productSource}
+	</select>
+
+	<!-- 根据名称、编码、代号模糊查询 -->
+	<!-- ygy -->
+	<select id="selectByKeywords" parameterType="java.lang.String"
+		resultType="com.sinux.modules.product.entity.PimProductInfo">
+		SELECT
+		<include refid="baseColumnList" />
+		FROM pim_product_info a
+		WHERE
+		product_name Like #{keywords}
+		OR
+		product_number Like #{keywords}
+		OR
+		product_code Like #{keywords}
+	</select>
+
+
+	<!-- 模糊查询所有是附件的产品相关信息 -->
+	<!-- javaType="com.sinux.modules.product.entity.PimProductType"> -->
+	<resultMap
+		type="com.sinux.modules.product.entity.PimProductInfo" id="searchRes">
+		<id column="ID" property="id" />
+		<result column="PRODUCT_NAME" property="productName" />
+		<result column="PRODUCT_NUMBER" property="productNumber" />
+		<result column="PRODUCT_CODE" property="productCode" />
+		<collection property="pimProductTypes"
+			ofType="com.sinux.modules.product.entity.PimProductType">
+			<id column="tId" property="id" />
+			<result column="tName" property="typeName" />
+			<result column="tDescription" property="description" />
+		</collection>
+	</resultMap>
+
+	<select id="selectAttachment"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo"
+		resultMap="searchRes">
+
+		SELECT a.*,c."ID" tId,c.TYPE_NAME tName,c.DESCRIPTION tDescription
+		FROM PIM_PRODUCT_INFO a,PIM_PRODUCT_INFO_TYPE b,PIM_PRODUCT_TYPE c
+		WHERE a."ID"=b.PRODUCT_ID AND b.TYPE_ID=c."ID"
+		<if test="isAttached!=null">
+			AND a.is_attached=#{isAttached}
+		</if>
+		<if test="keywords!=null and keywords!=''">
+			AND "CONCAT"(a.PRODUCT_NAME,c.TYPE_NAME) LIKE
+			'%${keywords}%'
+		</if>
+	</select>
+
+	<!-- 根据产品id查询其对应的组件的相关信息 -->
+	<!-- javaType="com.sinux.modules.product.entity.PimProductType"> -->
+	<resultMap
+		type="com.sinux.modules.product.entity.PimProductInfo" id="componentInfo">
+		<id column="ID" property="id" />
+		<result column="PRODUCT_NUMBER" property="productNumber" />
+		<result column="PRODUCT_NAME" property="productName" />
+		<result column="GRAPH_NUMBER" property="graphNumber" />
+		<association property="pimProductComponent"
+			javaType="com.sinux.modules.product.entity.PimProductComponent">
+			<result column="parentID" property="productId" />
+			<result column="childID" property="componentId" />
+			<result column="AMOUNT" property="amount" />
+			<result column="cDescription" property="description" />
+			<result column="PURPOSE" property="purpose" />
+		</association>
+		<collection property="pimProductTypes"
+			ofType="com.sinux.modules.product.entity.PimProductType">
+			<id column="tId" property="id" />
+			<result column="tName" property="typeName" />
+			<result column="tDescription" property="description" />
+		</collection>
+	</resultMap>
+
+	<select id="selectAttachmentByProductId"
+		parameterType="com.sinux.modules.product.entity.PimProductInfo"
+		resultMap="componentInfo">
+		
+		SELECT
+		PPI.*,PPC.PRODUCT_ID parentID,PPC.COMPONENT_ID childID,PPC.AMOUNT,PPC.DESCRIPTION cDescription,PPC.PURPOSE
+		,ppt."ID" tId,ppt.TYPE_NAME tName,ppt.DESCRIPTION tDescription
+		FROM
+		PIM_PRODUCT_INFO ppi
+		LEFT JOIN PIM_PRODUCT_COMPONENT ppc ON PPI."ID"=PPC.COMPONENT_ID
+		LEFT JOIN PIM_PRODUCT_INFO_TYPE ppit ON ppi.id=ppit.PRODUCT_ID
+		LEFT JOIN PIM_PRODUCT_TYPE ppt ON ppit.TYPE_ID=ppt.ID
+		WHERE PPI."ID" IN(SELECT COMPONENT_ID FROM PIM_PRODUCT_COMPONENT WHERE
+		PRODUCT_ID =#{id})
+	</select>
+	
+	<resultMap type="com.sinux.modules.product.entity.vo.ProdComponentRespVo" id="compInfos">
+		<id column="productId" property="productId"/>
+		<result column="productName" property="productName"/>
+		<result column="componentId" property="componentId"/>
+		<result column="componentName" property="componentName"/>
+		<collection ofType="com.sinux.modules.product.entity.PimProductType" 
+		property="typeList">
+			<!-- <id column="typeId" property="id"/> -->
+			<result column="typeName" property="typeName"/>
+		</collection>
+	</resultMap>
+
+	<select id="findCompInfos" resultMap="compInfos" parameterType="com.sinux.modules.product.entity.vo.ProdComponentRespVo">
+		SELECT
+		PPI."ID" productId,
+		PPI.PRODUCT_NAME productName,
+		ppi2.id componentId,
+		ppi2.product_name componentName,
+		ppi2.product_number componentNumber,
+		ppi2.graph_number componentGraph,
+		PPC.AMOUNT componentAmount,
+		PPC.PURPOSE componentPuprpose,
+		PPC.DESCRIPTION componentDescription,
+		PPT.ID typeId,
+		PPT.TYPE_NAME typeName
+		FROM
+		PIM_PRODUCT_INFO ppi
+		LEFT JOIN PIM_PRODUCT_COMPONENT ppc ON PPI."ID"=PPC.PRODUCT_ID
+		LEFT JOIN PIM_PRODUCT_INFO ppi2 ON ppc.component_id=ppi2.id
+		LEFT JOIN PIM_PRODUCT_INFO_TYPE ppit ON ppi2.id=ppit.product_id
+		LEFT JOIN PIM_PRODUCT_TYPE ppt ON ppt.id=ppit.type_id
+		WHERE PPI."ID"=#{id}
+	</select>
+
+
+</mapper>

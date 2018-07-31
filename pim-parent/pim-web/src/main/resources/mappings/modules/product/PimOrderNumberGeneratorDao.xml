@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sinux.modules.product.dao.PimOrderNumberGeneratorDao">
+    
+	<sql id="baseColumnList">
+						a.id AS "id",
+				a.order_type AS "orderType",
+				a.order_key AS "orderKey",
+				a.order_number AS "orderNumber"
+	</sql>
+	
+	<sql id="insertColumnList">
+						id,
+				order_type,
+				order_key,
+				order_number
+	</sql>
+	
+	
+	<sql id="sql_of_where">
+		where 1=1
+				<if test="id != null"> 
+				AND a.id = #{id}
+				</if>
+				<if test="orderType != null"> 
+				AND a.order_type = #{orderType}
+				</if>
+				<if test="orderKey != null"> 
+				AND a.order_key = #{orderKey}
+				</if>
+				<if test="orderNumber != null"> 
+				AND a.order_number = #{orderNumber}
+				</if>
+	</sql>
+	
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+        	AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+            	#{id}
+            </foreach>
+        </if>
+	</sql>
+	
+	<select id="select" parameterType="com.sinux.modules.product.entity.PimOrderNumberGenerator" resultType="com.sinux.modules.product.entity.PimOrderNumberGenerator" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_order_number_generator a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	
+	<select id="selectByExt" parameterType="com.sinux.modules.product.entity.ext.PimOrderNumberGeneratorExt" resultType="com.sinux.modules.product.entity.PimOrderNumberGenerator" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_order_number_generator a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="com.sinux.modules.product.entity.PimOrderNumberGenerator">
+		INSERT INTO pim_order_number_generator
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+					id,
+				</if>
+				<if test="orderType != null">
+					order_type,
+				</if>
+				<if test="orderKey != null">
+					order_key,
+				</if>
+				<if test="orderNumber != null">
+					order_number,
+				</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+			   		#{id},
+				</if>
+				<if test="orderType != null">
+			   		#{orderType},
+				</if>
+				<if test="orderKey != null">
+			   		#{orderKey},
+				</if>
+				<if test="orderNumber != null">
+			   		#{orderNumber},
+				</if>
+		</trim>
+	</insert>
+	
+	<insert id="insertBatch"  parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_order_number_generator
+		(
+		<include refid="insertColumnList"/>
+		)
+		<if test="dbName == 'mysql'">
+		values
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" separator=",">
+			(	
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.orderType != null">,#{item.orderType}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.orderKey != null">,#{item.orderKey}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.orderNumber != null">,#{item.orderNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+			)
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" separator="union all">
+				(select 
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.orderType != null">,#{item.orderType}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.orderKey != null">,#{item.orderKey}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.orderNumber != null">,#{item.orderNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+				FROM DUAL
+				)
+			</foreach>
+			</if>
+		</if>
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimOrderNumberGenerator">
+		update pim_order_number_generator
+		<set>
+					<if test="id != null" >
+	             		id = #{id},
+	            	</if>
+					<if test="orderType != null" >
+	             		order_type = #{orderType},
+	            	</if>
+					<if test="orderKey != null" >
+	             		order_key = #{orderKey},
+	            	</if>
+					<if test="orderNumber != null" >
+	             		order_number = #{orderNumber},
+	            	</if>
+		</set>
+		where 1=1
+	</update>
+	
+	<update id="updateAllByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimOrderNumberGenerator">
+		update pim_order_number_generator
+		<set>
+             		id = #{id},
+             		order_type = #{orderType},
+             		order_key = #{orderKey},
+             		order_number = #{orderNumber},
+		</set>
+		where 1=1
+	</update>
+	
+	<update id="updateBatchByPrimaryKey"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_order_number_generator
+			<set>
+						<if test="item.id != null" >
+	             			id = #{item.id},
+	            		</if>
+						<if test="item.orderType != null" >
+	             			order_type = #{item.orderType},
+	            		</if>
+						<if test="item.orderKey != null" >
+	             			order_key = #{item.orderKey},
+	            		</if>
+						<if test="item.orderNumber != null" >
+	             			order_number = #{item.orderNumber},
+	            		</if>
+			</set>
+			where 1=1
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_order_number_generator
+			<set>
+						<if test="item.id != null" >
+	             			id = #{item.id},
+	            		</if>
+						<if test="item.orderType != null" >
+	             			order_type = #{item.orderType},
+	            		</if>
+						<if test="item.orderKey != null" >
+	             			order_key = #{item.orderKey},
+	            		</if>
+						<if test="item.orderNumber != null" >
+	             			order_number = #{item.orderNumber},
+	            		</if>
+			</set>
+			where 1=1
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<update id="deleteByLogic" parameterType="com.sinux.modules.product.entity.PimOrderNumberGenerator">
+		update pim_order_number_generator set del_flag = '1' where 1=1
+	</update>
+	
+	<update id="deleteBatchByLogic"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_order_number_generator set del_flag = '1' where 1=1
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_order_number_generator set del_flag = '1' where 1=1
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<delete id="deleteByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimOrderNumberGenerator">
+		delete from pim_order_number_generator where 1=1
+    </delete>
+    
+    <delete id="deleteBatchByPrimaryKey" parameterType="java.util.List">
+		delete from pim_order_number_generator where 
+		<foreach collection="list" item="item" index="index" separator="or">
+		(
+		)
+		</foreach>
+    </delete>
+	
+</mapper>

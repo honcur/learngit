@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sinux.modules.product.dao.PimSoftwareInstallRecordDao">
+    
+	<sql id="baseColumnList">
+						a.id AS "id",
+				a.product_entity_id AS "productEntityId",
+				a.software_id AS "softwareId",
+				a.softwate_name AS "softwateName",
+				a.software_number AS "softwareNumber",
+				a.description AS "description",
+				a.detection_description AS "detectionDescription",
+				a.operation_date AS "operationDate",
+				a.create_by AS "createById",
+				a.create_date AS "createDate",
+				a.update_by AS "updateById",
+				a.update_date AS "updateDate"
+	</sql>
+	
+	<sql id="insertColumnList">
+						id,
+				product_entity_id,
+				software_id,
+				softwate_name,
+				software_number,
+				description,
+				detection_description,
+				operation_date,
+				create_by,
+				create_date,
+				update_by,
+				update_date
+	</sql>
+	
+	
+	<sql id="sql_of_where">
+		where 1=1
+				<if test="id != null"> 
+				AND a.id = #{id}
+				</if>
+				<if test="productEntityId != null"> 
+				AND a.product_entity_id = #{productEntityId}
+				</if>
+				<if test="softwareId != null"> 
+				AND a.software_id = #{softwareId}
+				</if>
+				<if test="softwateName != null"> 
+				AND a.softwate_name = #{softwateName}
+				</if>
+				<if test="softwareNumber != null"> 
+				AND a.software_number = #{softwareNumber}
+				</if>
+				<if test="description != null"> 
+				AND a.description = #{description}
+				</if>
+				<if test="detectionDescription != null"> 
+				AND a.detection_description = #{detectionDescription}
+				</if>
+				<if test="operationDate != null"> 
+				AND a.operation_date = #{operationDate}
+				</if>
+				<if test="createById != null"> 
+				AND a.create_by = #{createById}
+				</if>
+				<if test="createDate != null"> 
+				AND a.create_date = #{createDate}
+				</if>
+				<if test="updateById != null"> 
+				AND a.update_by = #{updateById}
+				</if>
+				<if test="updateDate != null"> 
+				AND a.update_date = #{updateDate}
+				</if>
+	</sql>
+	
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+        	AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+            	#{id}
+            </foreach>
+        </if>
+	</sql>
+	
+	<select id="select" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" resultType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_software_install_record a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	
+	<select id="selectByExt" parameterType="com.sinux.modules.product.entity.ext.PimSoftwareInstallRecordExt" resultType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_software_install_record a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord">
+		INSERT INTO pim_software_install_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+					id,
+				</if>
+				<if test="productEntityId != null">
+					product_entity_id,
+				</if>
+				<if test="softwareId != null">
+					software_id,
+				</if>
+				<if test="softwateName != null">
+					softwate_name,
+				</if>
+				<if test="softwareNumber != null">
+					software_number,
+				</if>
+				<if test="description != null">
+					description,
+				</if>
+				<if test="detectionDescription != null">
+					detection_description,
+				</if>
+				<if test="operationDate != null">
+					operation_date,
+				</if>
+				<if test="createById != null">
+					create_by,
+				</if>
+				<if test="createDate != null">
+					create_date,
+				</if>
+				<if test="updateById != null">
+					update_by,
+				</if>
+				<if test="updateDate != null">
+					update_date,
+				</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+			   		#{id},
+				</if>
+				<if test="productEntityId != null">
+			   		#{productEntityId},
+				</if>
+				<if test="softwareId != null">
+			   		#{softwareId},
+				</if>
+				<if test="softwateName != null">
+			   		#{softwateName},
+				</if>
+				<if test="softwareNumber != null">
+			   		#{softwareNumber},
+				</if>
+				<if test="description != null">
+			   		#{description},
+				</if>
+				<if test="detectionDescription != null">
+			   		#{detectionDescription},
+				</if>
+				<if test="operationDate != null">
+			   		#{operationDate},
+				</if>
+				<if test="createById != null">
+			   		#{createById},
+				</if>
+				<if test="createDate != null">
+			   		#{createDate},
+				</if>
+				<if test="updateById != null">
+			   		#{updateById},
+				</if>
+				<if test="updateDate != null">
+			   		#{updateDate},
+				</if>
+		</trim>
+	</insert>
+	
+	<insert id="insertBatch"  parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_software_install_record
+		(
+		<include refid="insertColumnList"/>
+		)
+		<if test="dbName == 'mysql'">
+		values
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" separator=",">
+			(	
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productEntityId != null">,#{item.productEntityId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwareId != null">,#{item.softwareId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwateName != null">,#{item.softwateName}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwareNumber != null">,#{item.softwareNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.description != null">,#{item.description}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.detectionDescription != null">,#{item.detectionDescription}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operationDate != null">,#{item.operationDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+			)
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" separator="union all">
+				(select 
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productEntityId != null">,#{item.productEntityId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwareId != null">,#{item.softwareId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwateName != null">,#{item.softwateName}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.softwareNumber != null">,#{item.softwareNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.description != null">,#{item.description}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.detectionDescription != null">,#{item.detectionDescription}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operationDate != null">,#{item.operationDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+				FROM DUAL
+				)
+			</foreach>
+			</if>
+		</if>
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord">
+		update pim_software_install_record
+		<set>
+					<if test="productEntityId != null" >
+	             		product_entity_id = #{productEntityId},
+	            	</if>
+					<if test="softwareId != null" >
+	             		software_id = #{softwareId},
+	            	</if>
+					<if test="softwateName != null" >
+	             		softwate_name = #{softwateName},
+	            	</if>
+					<if test="softwareNumber != null" >
+	             		software_number = #{softwareNumber},
+	            	</if>
+					<if test="description != null" >
+	             		description = #{description},
+	            	</if>
+					<if test="detectionDescription != null" >
+	             		detection_description = #{detectionDescription},
+	            	</if>
+					<if test="operationDate != null" >
+	             		operation_date = #{operationDate},
+	            	</if>
+					<if test="createById != null" >
+	             		create_by = #{createById},
+	            	</if>
+					<if test="createDate != null" >
+	             		create_date = #{createDate},
+	            	</if>
+					<if test="updateById != null" >
+	             		update_by = #{updateById},
+	            	</if>
+					<if test="updateDate != null" >
+	             		update_date = #{updateDate},
+	            	</if>
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateAllByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord">
+		update pim_software_install_record
+		<set>
+             		product_entity_id = #{productEntityId},
+             		software_id = #{softwareId},
+             		softwate_name = #{softwateName},
+             		software_number = #{softwareNumber},
+             		description = #{description},
+             		detection_description = #{detectionDescription},
+             		operation_date = #{operationDate},
+             		create_by = #{createById},
+             		create_date = #{createDate},
+             		update_by = #{updateById},
+             		update_date = #{updateDate},
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateBatchByPrimaryKey"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_software_install_record
+			<set>
+						<if test="item.productEntityId != null" >
+	             			product_entity_id = #{item.productEntityId},
+	            		</if>
+						<if test="item.softwareId != null" >
+	             			software_id = #{item.softwareId},
+	            		</if>
+						<if test="item.softwateName != null" >
+	             			softwate_name = #{item.softwateName},
+	            		</if>
+						<if test="item.softwareNumber != null" >
+	             			software_number = #{item.softwareNumber},
+	            		</if>
+						<if test="item.description != null" >
+	             			description = #{item.description},
+	            		</if>
+						<if test="item.detectionDescription != null" >
+	             			detection_description = #{item.detectionDescription},
+	            		</if>
+						<if test="item.operationDate != null" >
+	             			operation_date = #{item.operationDate},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_software_install_record
+			<set>
+						<if test="item.productEntityId != null" >
+	             			product_entity_id = #{item.productEntityId},
+	            		</if>
+						<if test="item.softwareId != null" >
+	             			software_id = #{item.softwareId},
+	            		</if>
+						<if test="item.softwateName != null" >
+	             			softwate_name = #{item.softwateName},
+	            		</if>
+						<if test="item.softwareNumber != null" >
+	             			software_number = #{item.softwareNumber},
+	            		</if>
+						<if test="item.description != null" >
+	             			description = #{item.description},
+	            		</if>
+						<if test="item.detectionDescription != null" >
+	             			detection_description = #{item.detectionDescription},
+	            		</if>
+						<if test="item.operationDate != null" >
+	             			operation_date = #{item.operationDate},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<update id="deleteByLogic" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord">
+		update pim_software_install_record set del_flag = '1' where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="deleteBatchByLogic"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_software_install_record set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_software_install_record set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<delete id="deleteByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord">
+		delete from pim_software_install_record where 1=1
+				and id = #{id}
+    </delete>
+    
+    <delete id="deleteBatchByPrimaryKey" parameterType="java.util.List">
+		delete from pim_software_install_record where 
+		<foreach collection="list" item="item" index="index" separator="or">
+		(
+				id = #{item.id}
+		)
+		</foreach>
+    </delete>
+    
+	<select id="get" parameterType="java.lang.String" resultType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_software_install_record a
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="get" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" resultType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_software_install_record a
+		<include refid="sql_of_where" />
+	</select>
+	
+	<select id="findList" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" resultType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_software_install_record a
+		<include refid="sql_of_where" />
+	</select>
+	
+	<select id="findAllList" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" resultType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_software_install_record a WHERE 1=1
+	</select>
+	
+	<select id="findUniqueByProperty" resultType="com.sinux.modules.product.entity.PimSoftwareInstallRecord" statementType="STATEMENT">
+		SELECT
+		<include refid="baseColumnList"/>
+		FROM pim_software_install_record  WHERE ${propertyName} = '${value}'
+	</select>
+	
+	<update id="update" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord">
+		update pim_software_install_record
+		<set>
+					<if test="productEntityId != null" >
+	             		product_entity_id = #{productEntityId},
+	            	</if>
+					<if test="softwareId != null" >
+	             		software_id = #{softwareId},
+	            	</if>
+					<if test="softwateName != null" >
+	             		softwate_name = #{softwateName},
+	            	</if>
+					<if test="softwareNumber != null" >
+	             		software_number = #{softwareNumber},
+	            	</if>
+					<if test="description != null" >
+	             		description = #{description},
+	            	</if>
+					<if test="detectionDescription != null" >
+	             		detection_description = #{detectionDescription},
+	            	</if>
+					<if test="operationDate != null" >
+	             		operation_date = #{operationDate},
+	            	</if>
+					<if test="createById != null" >
+	             		create_by = #{createById},
+	            	</if>
+					<if test="createDate != null" >
+	             		create_date = #{createDate},
+	            	</if>
+					<if test="updateById != null" >
+	             		update_by = #{updateById},
+	            	</if>
+					<if test="updateDate != null" >
+	             		update_date = #{updateDate},
+	            	</if>
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="com.sinux.modules.product.entity.PimSoftwareInstallRecord">
+		delete from pim_software_install_record where 1=1
+				and id = #{id}
+    </delete>
+    
+	<delete id="deleteAllData" >
+		delete from pim_software_install_record
+    </delete>
+	
+</mapper>

@@ -1,0 +1,171 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sinux</groupId>
+        <artifactId>pim-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.sinux</groupId>
+    <artifactId>pim-web</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>pim-web</name>
+    <url>http://maven.apache.org</url>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sinux</groupId>
+            <artifactId>jfusion-admin</artifactId>
+        </dependency>
+        <!--引入gen模块-->
+        <dependency>
+            <groupId>com.sinux</groupId>
+            <artifactId>jfusion-gen</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sinux</groupId>
+            <artifactId>pim-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--servlet-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- 配置文件 -->
+    <profiles>
+        <profile><!-- 研发环境 -->
+            <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active><!-- Tomcat7的部署url是manager/text Tomcat6没有/text -->
+                <deploy.url>http://192.168.3.13:8086/manager/text</deploy.url>
+                <tomcat.username>admin</tomcat.username>
+                <tomcat.password>admin</tomcat.password>
+            </properties>
+        </profile>
+        <profile><!-- 测试环境 -->
+            <id>test</id>
+            <properties>
+                <profiles.active>test</profiles.active><!-- Tomcat7的部署url是manager/text Tomcat6没有/text -->
+                <deploy.url>http://192.168.3.13:8088/manager/text</deploy.url>
+                <tomcat.username>admin</tomcat.username>
+                <tomcat.password>admin</tomcat.password>
+            </properties>
+        </profile>
+        <profile><!-- 本地开发环境 -->
+            <id>local</id>
+            <properties>
+                <profiles.active>local</profiles.active>
+                <deploy.url>http://127.0.0.1:8080/manager/text</deploy.url>
+                <tomcat.username>admin</tomcat.username>
+                <tomcat.password>admin</tomcat.password>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <!-- 生产环境 (出于安全考虑，一般生产环境不能自动部署，也不会开放端口，需要人工处理，这里的配置用来打包) -->
+            <id>pro</id>
+            <properties>
+                <profiles.active>pro</profiles.active>
+                <deploy.url>http://192.168.3.12:8080/manager/text</deploy.url>
+                <tomcat.username>admin</tomcat.username>
+                <tomcat.password>admin</tomcat.password>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>/</finalName>
+        <!-- 打包配置文件管理 -->
+        <resources>
+            <!-- 代码生成器配置文件过滤 -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <!-- 所有环境配置文件过滤 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>local/*</exclude>
+                    <exclude>pro/*</exclude>
+                    <exclude>dev/*</exclude>
+                    <exclude>test/*</exclude>
+                </excludes>
+            </resource>
+            <!-- 指定环境配置文件导入 -->
+            <resource>
+                <directory>src/main/resources/${profiles.active}</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArgs>
+                        <arg>-extdirs</arg>
+                        <arg>${project.basedir}/src/main/webapp/WEB-INF/lib</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <!-- 发布到根目录出现的问题 -->
+                    <packagingExcludes>
+                        classes/**,generated-sources/**,maven-archiver/**,maven-status/**,m2e-wtp/**
+                    </packagingExcludes>
+                </configuration>
+            </plugin>
+            <!-- jetty 运行插件 -->
+            <!--<plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.6.v20170531</version>
+                <configuration>
+                    <httpConnector>
+                        <port>8080</port>
+                    </httpConnector>
+                    <scanIntervalSeconds>5</scanIntervalSeconds>
+                    <stopKey>shutdown</stopKey>
+                    <stopPort>9966</stopPort>
+                    &lt;!&ndash; dumpOnStart 默认值为 false，如果设为 true，jetty 在启动时会把当前服务进程的内存信息输出到控制台中，但这并不会保存到文件中 &ndash;&gt;
+                    <dumpOnStart>false</dumpOnStart>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                </configuration>
+            </plugin>-->
+            <!--部署到tomcat服务器-->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <port>8080</port>
+                    <path>/</path>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

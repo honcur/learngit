@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sinux.modules.product.dao.PimProductCategoryDao">
+
+    <sql id="baseColumnList">
+						a.id AS "id",
+				a.category_name AS "categoryName",
+				a.category_number AS "categoryNumber",
+				a.category_source AS "categorySource",
+				a.description AS "description",
+				a.is_show AS "isShow",
+				a.sort AS "sort",
+				a.parent_id AS "parent.id",
+				a.create_by AS "createById",
+				a.create_date AS "createDate",
+				a.update_by AS "updateById",
+				a.update_date AS "updateDate"
+	</sql>
+
+    <sql id="insertColumnList">
+						id,
+				category_name,
+				category_number,
+				category_source,
+				description,
+				is_show,
+				sort,
+				parent_id,
+				create_by,
+				create_date,
+				update_by,
+				update_date
+	</sql>
+
+
+    <sql id="sql_of_where">
+        where 1=1
+        <if test="id != null">
+            AND a.id = #{id}
+        </if>
+        <if test="categoryName != null">
+            AND a.category_name = #{categoryName}
+        </if>
+        <if test="categoryNumber != null">
+            AND a.category_number = #{categoryNumber}
+        </if>
+        <if test="categorySource != null">
+            AND a.category_source = #{categorySource}
+        </if>
+        <if test="description != null">
+            AND a.description = #{description}
+        </if>
+        <if test="isShow != null">
+            AND a.is_show = #{isShow}
+        </if>
+        <if test="sort != null">
+            AND a.sort = #{sort}
+        </if>
+        <if test="parent!=null and parent.id != null">
+            AND a.parent_id = #{parent.id}
+        </if>
+        <if test="createById != null">
+            AND a.create_by = #{createById}
+        </if>
+        <if test="createDate != null">
+            AND a.create_date = #{createDate}
+        </if>
+        <if test="updateById != null">
+            AND a.update_by = #{updateById}
+        </if>
+        <if test="updateDate != null">
+            AND a.update_date = #{updateDate}
+        </if>
+        <if test="search !=null and search!=''">
+            and category_name like '%${search}%' or category_number like '%${search}%'
+        </if>
+    </sql>
+
+    <sql id="sql_of_where_ext">
+        <include refid="sql_of_where"/>
+        <if test="ids != null and ids.size > 0">
+            AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="select" parameterType="com.sinux.modules.product.entity.PimProductCategory"
+            resultType="com.sinux.modules.product.entity.PimProductCategory">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM pim_product_category a
+        <include refid="sql_of_where"/>
+        <if test="page.orderBy != null and page.orderBy != ''">
+            ORDER BY ${page.orderBy}
+        </if>
+    </select>
+
+
+    <select id="selectByExt" parameterType="com.sinux.modules.product.entity.ext.PimProductCategoryExt"
+            resultType="com.sinux.modules.product.entity.PimProductCategory">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM pim_product_category a
+        <include refid="sql_of_where_ext"/>
+        <if test="page.orderBy != null and page.orderBy != ''">
+            ORDER BY ${page.orderBy}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.sinux.modules.product.entity.PimProductCategory">
+        INSERT INTO pim_product_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="categoryName != null">
+                category_name,
+            </if>
+            <if test="categoryNumber != null">
+                category_number,
+            </if>
+            <if test="categorySource != null">
+                category_source,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="isShow != null">
+                is_show,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="parent!=null and parent.id != null">
+                parent_id,
+            </if>
+            <if test="createById != null">
+                create_by,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateById != null">
+                update_by,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="categoryName != null">
+                #{categoryName},
+            </if>
+            <if test="categoryNumber != null">
+                #{categoryNumber},
+            </if>
+            <if test="categorySource != null">
+                #{categorySource},
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="isShow != null">
+                #{isShow},
+            </if>
+            <if test="sort != null">
+                #{sort},
+            </if>
+            <if test="parent!=null and parent.id != null">
+                #{parent.id},
+            </if>
+            <if test="createById != null">
+                #{createById},
+            </if>
+            <if test="createDate != null">
+                #{createDate},
+            </if>
+            <if test="updateById != null">
+                #{updateById},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="com.sinux.core.persistence.BatchEntity">
+        insert into pim_product_category
+        (
+        <include refid="insertColumnList"/>
+        )
+        <if test="dbName == 'mysql'">
+            values
+            <if test="dataList != null and dataList.size > 0">
+                <foreach collection="dataList" item="item" separator=",">
+                    (
+                    <choose>
+                        <when test="item.id != null">#{item.id}</when>
+                        <otherwise>null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.categoryName != null">,#{item.categoryName}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.categoryNumber != null">,#{item.categoryNumber}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.categorySource != null">,#{item.categorySource}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.description != null">,#{item.description}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.isShow != null">,#{item.isShow}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.sort != null">,#{item.sort}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.parent!=null and item.parent.id != null">,#{item.parent.id}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.createById != null">,#{item.createById}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.createDate != null">,#{item.createDate}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.updateById != null">,#{item.updateById}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.updateDate != null">,#{item.updateDate}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    )
+                </foreach>
+            </if>
+        </if>
+        <if test="dbName == 'oracle'">
+            <if test="dataList != null and dataList.size > 0">
+                <foreach collection="dataList" item="item" separator="union all">
+                    (select
+                    <choose>
+                        <when test="item.id != null">#{item.id}</when>
+                        <otherwise>null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.categoryName != null">,#{item.categoryName}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.categoryNumber != null">,#{item.categoryNumber}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.categorySource != null">,#{item.categorySource}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.description != null">,#{item.description}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.isShow != null">,#{item.isShow}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.sort != null">,#{item.sort}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.parent!=null and item.parent.id != null">,#{item.parent.id}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.createById != null">,#{item.createById}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.createDate != null">,#{item.createDate}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.updateById != null">,#{item.updateById}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="item.updateDate != null">,#{item.updateDate}</when>
+                        <otherwise>,null</otherwise>
+                    </choose>
+                    FROM DUAL
+                    )
+                </foreach>
+            </if>
+        </if>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimProductCategory">
+        update pim_product_category
+        <set>
+            <if test="categoryName != null">
+                category_name = #{categoryName},
+            </if>
+            <if test="categoryNumber != null">
+                category_number = #{categoryNumber},
+            </if>
+            <if test="categorySource != null">
+                category_source = #{categorySource},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="isShow != null">
+                is_show = #{isShow},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="parent!=null and parent.id != null">
+                parent_id = #{parent.id},
+            </if>
+            <if test="createById != null">
+                create_by = #{createById},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="updateById != null">
+                update_by = #{updateById},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate},
+            </if>
+        </set>
+        where 1=1
+        and id = #{id}
+    </update>
+
+    <update id="updateAllByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimProductCategory">
+        update pim_product_category
+        <set>
+            category_name = #{categoryName},
+            category_number = #{categoryNumber},
+            category_source = #{categorySource},
+            description = #{description},
+            is_show = #{isShow},
+            sort = #{sort},
+            parent_id = #{parent.id},
+            create_by = #{createById},
+            create_date = #{createDate},
+            update_by = #{updateById},
+            update_date = #{updateDate},
+        </set>
+        where 1=1
+        and id = #{id}
+    </update>
+
+    <update id="updateBatchByPrimaryKey" parameterType="com.sinux.core.persistence.BatchEntity">
+        <if test="dbName == 'mysql'">
+            <if test="dataList != null and dataList.size > 0">
+                <foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+                    update pim_product_category
+                    <set>
+                        <if test="item.categoryName != null">
+                            category_name = #{item.categoryName},
+                        </if>
+                        <if test="item.categoryNumber != null">
+                            category_number = #{item.categoryNumber},
+                        </if>
+                        <if test="item.categorySource != null">
+                            category_source = #{item.categorySource},
+                        </if>
+                        <if test="item.description != null">
+                            description = #{item.description},
+                        </if>
+                        <if test="item.isShow != null">
+                            is_show = #{item.isShow},
+                        </if>
+                        <if test="item.sort != null">
+                            sort = #{item.sort},
+                        </if>
+                        <if test="item.parent!=null and item.parent.id != null">
+                            parent_id = #{item.parent.id},
+                        </if>
+                        <if test="item.createById != null">
+                            create_by = #{item.createById},
+                        </if>
+                        <if test="item.createDate != null">
+                            create_date = #{item.createDate},
+                        </if>
+                        <if test="item.updateById != null">
+                            update_by = #{item.updateById},
+                        </if>
+                        <if test="item.updateDate != null">
+                            update_date = #{item.updateDate},
+                        </if>
+                    </set>
+                    where 1=1
+                    and id = #{item.id}
+                </foreach>
+            </if>
+        </if>
+        <if test="dbName == 'oracle'">
+            <if test="dataList != null and dataList.size > 0">
+                <foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+                    update pim_product_category
+                    <set>
+                        <if test="item.categoryName != null">
+                            category_name = #{item.categoryName},
+                        </if>
+                        <if test="item.categoryNumber != null">
+                            category_number = #{item.categoryNumber},
+                        </if>
+                        <if test="item.categorySource != null">
+                            category_source = #{item.categorySource},
+                        </if>
+                        <if test="item.description != null">
+                            description = #{item.description},
+                        </if>
+                        <if test="item.isShow != null">
+                            is_show = #{item.isShow},
+                        </if>
+                        <if test="item.sort != null">
+                            sort = #{item.sort},
+                        </if>
+                        <if test="item.parent!=null and item.parent.id != null">
+                            parent_id = #{item.parent.id},
+                        </if>
+                        <if test="item.createById != null">
+                            create_by = #{item.createById},
+                        </if>
+                        <if test="item.createDate != null">
+                            create_date = #{item.createDate},
+                        </if>
+                        <if test="item.updateById != null">
+                            update_by = #{item.updateById},
+                        </if>
+                        <if test="item.updateDate != null">
+                            update_date = #{item.updateDate},
+                        </if>
+                    </set>
+                    where 1=1
+                    and id = #{item.id}
+                </foreach>
+            </if>
+        </if>
+    </update>
+
+    <update id="deleteByLogic" parameterType="com.sinux.modules.product.entity.PimProductCategory">
+		update pim_product_category set del_flag = '1' where 1=1
+				and id = #{id}
+	</update>
+
+    <update id="deleteBatchByLogic" parameterType="com.sinux.core.persistence.BatchEntity">
+        <if test="dbName == 'mysql'">
+            <if test="dataList != null and dataList.size > 0">
+                <foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+                    update pim_product_category set del_flag = '1' where 1=1
+                    and id = #{item.id}
+                </foreach>
+            </if>
+        </if>
+        <if test="dbName == 'oracle'">
+            <if test="dataList != null and dataList.size > 0">
+                <foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+                    update pim_product_category set del_flag = '1' where 1=1
+                    and id = #{item.id}
+                </foreach>
+            </if>
+        </if>
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimProductCategory">
+		delete from pim_product_category where 1=1
+				and id = #{id}
+    </delete>
+
+    <delete id="deleteBatchByPrimaryKey" parameterType="java.util.List">
+        delete from pim_product_category where
+        <foreach collection="list" item="item" index="index" separator="or">
+            (
+            id = #{item.id}
+            )
+        </foreach>
+    </delete>
+
+    <select id="selectWithNameOrNum" parameterType="com.sinux.modules.product.entity.PimProductCategory"
+            resultType="com.sinux.modules.product.entity.PimProductCategory">
+		select * from pim_product_category
+		 <where>
+             <if test="categoryName !=null and categoryName!=''">
+                 category_name = #{categoryName}
+             </if>
+             <if test="categoryNumber !=null and categoryNumber!=''">
+                 or category_number = #{categoryNumber}
+             </if>
+
+         </where>
+	</select>
+
+    <select id="selectById" resultType="com.sinux.modules.product.entity.PimProductCategory">
+        select * from pim_product_category where id =#{id}
+    </select>
+
+    <delete id="deleteById" >
+        delete from pim_product_category where id = #{id}
+    </delete>
+
+    <select id="selectAllParents" resultType="com.sinux.modules.product.entity.vo.ProdCategoryRespVo">
+        select * from pim_product_category where parent_id is null order by sort asc
+    </select>
+
+    <select id="selectByParentId" resultType="com.sinux.modules.product.entity.vo.ProdCategoryRespVo">
+        select * from pim_product_category where parent_id = #{parentId} order by sort asc
+    </select>
+
+</mapper>

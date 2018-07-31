@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sinux.modules.product.dao.PimInProductEntityDao">
+    
+	<sql id="baseColumnList">
+						a.order_id AS "orderId",
+				a.product_entity_id AS "productEntityId",
+				a.ownership_id AS "ownershipId"
+	</sql>
+	
+	<sql id="insertColumnList">
+						order_id,
+				product_entity_id,
+				ownership_id
+	</sql>
+	
+	
+	<sql id="sql_of_where">
+		where 1=1
+				<if test="orderId != null"> 
+				AND a.order_id = #{orderId}
+				</if>
+				<if test="productEntityId != null"> 
+				AND a.product_entity_id = #{productEntityId}
+				</if>
+				<if test="ownershipId != null"> 
+				AND a.ownership_id = #{ownershipId}
+				</if>
+	</sql>
+	
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+        	AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+            	#{id}
+            </foreach>
+        </if>
+	</sql>
+	
+	<select id="select" parameterType="com.sinux.modules.product.entity.PimInProductEntity" resultType="com.sinux.modules.product.entity.PimInProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_in_product_entity a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	
+	<select id="selectByExt" parameterType="com.sinux.modules.product.entity.ext.PimInProductEntityExt" resultType="com.sinux.modules.product.entity.PimInProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_in_product_entity a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="com.sinux.modules.product.entity.PimInProductEntity">
+		INSERT INTO pim_in_product_entity
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="orderId != null">
+					order_id,
+				</if>
+				<if test="productEntityId != null">
+					product_entity_id,
+				</if>
+				<if test="ownershipId != null">
+					ownership_id,
+				</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="orderId != null">
+			   		#{orderId},
+				</if>
+				<if test="productEntityId != null">
+			   		#{productEntityId},
+				</if>
+				<if test="ownershipId != null">
+			   		#{ownershipId},
+				</if>
+		</trim>
+	</insert>
+	
+	<insert id="insertBatch"  parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_in_product_entity
+		(
+		<include refid="insertColumnList"/>
+		)
+		<if test="dbName == 'mysql'">
+		values
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" separator=",">
+			(	
+						<choose>  
+							<when test="item.orderId != null">#{item.orderId}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productEntityId != null">,#{item.productEntityId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.ownershipId != null">,#{item.ownershipId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+			)
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" separator="union all">
+				(select 
+						<choose>  
+							<when test="item.orderId != null">#{item.orderId}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.productEntityId != null">,#{item.productEntityId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.ownershipId != null">,#{item.ownershipId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+				FROM DUAL
+				)
+			</foreach>
+			</if>
+		</if>
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimInProductEntity">
+		update pim_in_product_entity
+		<set>
+					<if test="orderId != null" >
+	             		order_id = #{orderId},
+	            	</if>
+					<if test="productEntityId != null" >
+	             		product_entity_id = #{productEntityId},
+	            	</if>
+					<if test="ownershipId != null" >
+	             		ownership_id = #{ownershipId},
+	            	</if>
+		</set>
+		where 1=1
+	</update>
+	
+	<update id="updateAllByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimInProductEntity">
+		update pim_in_product_entity
+		<set>
+             		order_id = #{orderId},
+             		product_entity_id = #{productEntityId},
+             		ownership_id = #{ownershipId},
+		</set>
+		where 1=1
+	</update>
+	
+	<update id="updateBatchByPrimaryKey"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_in_product_entity
+			<set>
+						<if test="item.orderId != null" >
+	             			order_id = #{item.orderId},
+	            		</if>
+						<if test="item.productEntityId != null" >
+	             			product_entity_id = #{item.productEntityId},
+	            		</if>
+						<if test="item.ownershipId != null" >
+	             			ownership_id = #{item.ownershipId},
+	            		</if>
+			</set>
+			where 1=1
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_in_product_entity
+			<set>
+						<if test="item.orderId != null" >
+	             			order_id = #{item.orderId},
+	            		</if>
+						<if test="item.productEntityId != null" >
+	             			product_entity_id = #{item.productEntityId},
+	            		</if>
+						<if test="item.ownershipId != null" >
+	             			ownership_id = #{item.ownershipId},
+	            		</if>
+			</set>
+			where 1=1
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<update id="deleteByLogic" parameterType="com.sinux.modules.product.entity.PimInProductEntity">
+		update pim_in_product_entity set del_flag = '1' where 1=1
+	</update>
+	
+	<update id="deleteBatchByLogic"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_in_product_entity set del_flag = '1' where 1=1
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_in_product_entity set del_flag = '1' where 1=1
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<delete id="deleteByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimInProductEntity">
+		delete from pim_in_product_entity where 1=1
+    </delete>
+    
+    <delete id="deleteBatchByPrimaryKey" parameterType="java.util.List">
+		delete from pim_in_product_entity where 
+		<foreach collection="list" item="item" index="index" separator="or">
+		(
+		)
+		</foreach>
+    </delete>
+    
+	<select id="get" parameterType="java.lang.String" resultType="com.sinux.modules.product.entity.PimInProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_in_product_entity a
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="get" parameterType="com.sinux.modules.product.entity.PimInProductEntity" resultType="com.sinux.modules.product.entity.PimInProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_in_product_entity a
+		<include refid="sql_of_where" />
+	</select>
+	
+	<select id="findList" parameterType="com.sinux.modules.product.entity.PimInProductEntity" resultType="com.sinux.modules.product.entity.PimInProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_in_product_entity a
+		<include refid="sql_of_where" />
+	</select>
+	
+	<select id="findAllList" parameterType="com.sinux.modules.product.entity.PimInProductEntity" resultType="com.sinux.modules.product.entity.PimInProductEntity" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_in_product_entity a WHERE 1=1
+	</select>
+	
+	<select id="findUniqueByProperty" resultType="com.sinux.modules.product.entity.PimInProductEntity" statementType="STATEMENT">
+		SELECT
+		<include refid="baseColumnList"/>
+		FROM pim_in_product_entity  WHERE ${propertyName} = '${value}'
+	</select>
+	
+	<update id="update" parameterType="com.sinux.modules.product.entity.PimInProductEntity">
+		update pim_in_product_entity
+		<set>
+					<if test="orderId != null" >
+	             		order_id = #{orderId},
+	            	</if>
+					<if test="productEntityId != null" >
+	             		product_entity_id = #{productEntityId},
+	            	</if>
+					<if test="ownershipId != null" >
+	             		ownership_id = #{ownershipId},
+	            	</if>
+		</set>
+		where 1=1
+	</update>
+	
+	<delete id="delete" parameterType="com.sinux.modules.product.entity.PimInProductEntity">
+		delete from pim_in_product_entity where 1=1
+    </delete>
+    
+	<delete id="deleteAllData" >
+		delete from pim_in_product_entity
+    </delete>
+	
+</mapper>

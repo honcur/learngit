@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.sinux.modules.product.dao.PimProductComponentDao">
+
+	<sql id="baseColumnList">
+		a.product_id AS "productId",
+		a.component_id AS
+		"componentId",
+		a.amount AS "amount",
+		a.description AS "description",
+		a.purpose AS "purpose"
+	</sql>
+	<sql id="insertColumnList">
+		product_id,
+		component_id,
+		amount,
+		description,
+		purpose
+	</sql>
+
+
+	<sql id="sql_of_where">
+		where 1=1
+		<if test="productId != null">
+			AND a.product_id = #{productId}
+		</if>
+		<if test="componentId != null">
+			AND a.component_id = #{componentId}
+		</if>
+		<if test="amount != null">
+			AND a.amount = #{amount}
+		</if>
+		<if test="description != null">
+			AND a.description = #{description}
+		</if>
+		<if test="purpose != null">
+			AND a.purpose = #{purpose}
+		</if>
+	</sql>
+
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+			AND a.id IN
+			<foreach collection="ids" item="id" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</if>
+	</sql>
+
+	<!-- 自定义的配套关系集合列表 -->
+	<!-- ygy -->
+	<sql id="componentSelectColumnList">
+		b.COMPONENT_ID AS "componentId",
+		a.PRODUCT_NAME AS
+		"componentName",
+		a.PRODUCT_NUMBER AS
+		"componentCoding",
+		a.GRAPH_NUMBER AS
+		"componentGraphNumber",
+		b.PURPOSE
+		AS "componentPurpose",
+		b.AMOUNT AS
+		"componentAmount",
+		b.DESCRIPTION AS
+		"Remarks"
+	</sql>
+
+	<select id="select"
+		parameterType="com.sinux.modules.product.entity.PimProductComponent"
+		resultType="com.sinux.modules.product.entity.PimProductComponent">
+		SELECT
+		<include refid="baseColumnList" />
+		FROM pim_product_component a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+
+
+	<select id="selectByExt"
+		parameterType="com.sinux.modules.product.entity.ext.PimProductComponentExt"
+		resultType="com.sinux.modules.product.entity.PimProductComponent">
+		SELECT
+		<include refid="baseColumnList" />
+		FROM pim_product_component a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+
+	<insert id="insert"
+		parameterType="com.sinux.modules.product.entity.PimProductComponent">
+		INSERT INTO pim_product_component
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				product_id,
+			</if>
+			<if test="componentId != null">
+				component_id,
+			</if>
+			<if test="amount != null">
+				amount,
+			</if>
+			<if test="description != null">
+				description,
+			</if>
+			<if test="purpose != null">
+				purpose,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				#{productId},
+			</if>
+			<if test="componentId != null">
+				#{componentId},
+			</if>
+			<if test="amount != null">
+				#{amount},
+			</if>
+			<if test="description != null">
+				#{description},
+			</if>
+			<if test="purpose != null">
+				#{purpose},
+			</if>
+		</trim>
+	</insert>
+
+	<insert id="insertBatch"
+		parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_product_component
+		(
+		<include refid="insertColumnList" />
+		)
+		<if test="dbName == 'mysql'">
+			values
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" separator=",">
+					(
+					<choose>
+						<when test="item.productId != null">#{item.productId}</when>
+						<otherwise>null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.componentId != null">,#{item.componentId}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.amount != null">,#{item.amount}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.description != null">,#{item.description}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.purpose != null">,#{item.purpose}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					)
+				</foreach>
+			</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item"
+					separator="union all">
+					(select
+					<choose>
+						<when test="item.productId != null">#{item.productId}</when>
+						<otherwise>null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.componentId != null">,#{item.componentId}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.amount != null">,#{item.amount}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.description != null">,#{item.description}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					<choose>
+						<when test="item.purpose != null">,#{item.purpose}</when>
+						<otherwise>,null</otherwise>
+					</choose>
+					FROM DUAL
+					)
+				</foreach>
+			</if>
+		</if>
+	</insert>
+
+	<update id="updateByPrimaryKey"
+		parameterType="com.sinux.modules.product.entity.PimProductComponent">
+		update pim_product_component
+		<set>
+			<if test="productId != null">
+				product_id = #{productId},
+			</if>
+			<if test="componentId != null">
+				component_id = #{componentId},
+			</if>
+			<if test="amount != null">
+				amount = #{amount},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="purpose != null">
+				purpose = #{purpose},
+			</if>
+		</set>
+		where 1=1
+	</update>
+
+	<update id="updateAllByPrimaryKey"
+		parameterType="com.sinux.modules.product.entity.PimProductComponent">
+		update pim_product_component
+		<set>
+			product_id = #{productId},
+			component_id = #{componentId},
+			amount =
+			#{amount},
+			description = #{description},
+			purpose = #{purpose},
+		</set>
+		where 1=1
+	</update>
+
+	<update id="updateBatchByPrimaryKey"
+		parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="" close="" separator=";">
+					update pim_product_component
+					<set>
+						<if test="item.productId != null">
+							product_id = #{item.productId},
+						</if>
+						<if test="item.componentId != null">
+							component_id = #{item.componentId},
+						</if>
+						<if test="item.amount != null">
+							amount = #{item.amount},
+						</if>
+						<if test="item.description != null">
+							description = #{item.description},
+						</if>
+						<if test="item.purpose != null">
+							purpose = #{item.purpose},
+						</if>
+					</set>
+					where 1=1
+				</foreach>
+			</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="begin" close=";end;" separator=";">
+					update pim_product_component
+					<set>
+						<if test="item.productId != null">
+							product_id = #{item.productId},
+						</if>
+						<if test="item.componentId != null">
+							component_id = #{item.componentId},
+						</if>
+						<if test="item.amount != null">
+							amount = #{item.amount},
+						</if>
+						<if test="item.description != null">
+							description = #{item.description},
+						</if>
+						<if test="item.purpose != null">
+							purpose = #{item.purpose},
+						</if>
+					</set>
+					where 1=1
+				</foreach>
+			</if>
+		</if>
+	</update>
+
+	<update id="deleteByLogic"
+		parameterType="com.sinux.modules.product.entity.PimProductComponent">
+		update pim_product_component set del_flag = '1' where
+		1=1
+	</update>
+
+	<update id="deleteBatchByLogic"
+		parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="" close="" separator=";">
+					update pim_product_component set
+					del_flag = '1' where 1=1
+				</foreach>
+			</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+				<foreach collection="dataList" item="item" index="index"
+					open="begin" close=";end;" separator=";">
+					update pim_product_component
+					set del_flag = '1' where 1=1
+				</foreach>
+			</if>
+		</if>
+	</update>
+
+	<delete id="deleteByPrimaryKey"
+		parameterType="com.sinux.modules.product.entity.PimProductComponent">
+		delete from pim_product_component where 1=1
+	</delete>
+
+	<delete id="deleteBatchByPrimaryKey"
+		parameterType="java.util.List">
+		delete from pim_product_component where
+		<foreach collection="list" item="item" index="index"
+			separator="or">
+			(
+			)
+		</foreach>
+	</delete>
+
+	<!-- 根据组件id查询其对应的组件产品 -->
+	<!-- ygy -->
+	<select id="selectComponentsByComponentId"
+		parameterType="java.lang.String"
+		resultType="com.sinux.modules.product.entity.vo.ProductComponentVo">
+		SELECT
+		<include refid="componentSelectColumnList" />
+		FROM PIM_PRODUCT_INFO a join PIM_PRODUCT_COMPONENT b ON
+		a."ID"=b.COMPONENT_ID WHERE a."ID"=#{componentId}
+
+	</select>
+
+	<!-- 根据产品id查询其对应的所有应组件id集合 -->
+	<!-- ygy -->
+	<select id="getComponentIds" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		SELECT COMPONENT_ID FROM PIM_PRODUCT_COMPONENT WHERE
+		PRODUCT_ID=#{productId}
+	</select>
+
+	<!-- 根据组件id查询其对应的类型名称集合 -->
+	<!-- ygy -->
+	<select id="selectTypeNamesByComponentId"
+		parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT a.TYPE_NAME FROM
+		PIM_PRODUCT_TYPE a join PIM_PRODUCT_INFO_TYPE b ON a."ID"=b.TYPE_ID
+		WHERE b.PRODUCT_ID=#{componentId}
+	</select>
+
+	<!-- 根据产品id和组件id查询组件对象 -->
+	<!-- ygy -->
+	<select id="selectWithPidAndCid" parameterType="java.util.Map"
+		resultType="com.sinux.modules.product.entity.PimProductComponent">
+		SELECT * FROM PIM_PRODUCT_COMPONENT WHERE
+		PRODUCT_ID=#{productId}
+		AND COMPONENT_ID=#{componentId}
+	</select>
+
+
+	<!-- 新增一条组件对象 -->
+	<!-- ygy -->
+	<insert id="addComponent"
+		parameterType="com.sinux.modules.product.entity.vo.ProductComponentVo">
+		INSERT INTO pim_product_component
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				product_id,
+			</if>
+			<if test="componentId != null">
+				component_id,
+			</if>
+			<if test="componentAmount != null">
+				amount,
+			</if>
+			<if test="Remarks != null">
+				description,
+			</if>
+			<if test="componentPurpose != null">
+				purpose,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				#{productId},
+			</if>
+			<if test="componentId != null">
+				#{componentId},
+			</if>
+			<if test="componentAmount != null">
+				#{componentAmount},
+			</if>
+			<if test="Remarks != null">
+				#{Remarks},
+			</if>
+			<if test="componentPurpose != null">
+				#{componentPurpose},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 更新一条组件信息 -->
+	<!-- ygy -->
+	<update id="updateComponent"
+		parameterType="com.sinux.modules.product.entity.vo.ProductComponentVo">
+		update pim_product_component
+		<set>
+			<if test="componentAmount != null">
+				amount = #{componentAmount},
+			</if>
+			<if test="Remarks != null">
+				description = #{Remarks},
+			</if>
+			<if test="componentPurpose != null">
+				purpose = #{componentPurpose},
+			</if>
+		</set>
+		where product_id=#{productId} and component_id=#{componentId}
+	</update>
+
+	<!-- 删除一条组件信息 -->
+	<!-- ygy -->
+	<delete id="deleteComponent"
+		parameterType="com.sinux.modules.product.entity.vo.ProductComponentVo">
+		delete from pim_product_component where
+		product_id=#{productId} and component_id=#{componentId}
+	</delete>
+
+</mapper>

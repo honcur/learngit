@@ -1,0 +1,164 @@
+datasource: 
+  enable: true
+  datasources: 
+    primaryDataSource: 
+      enable: true
+      poolSize: 10
+      minPoolSize: 10
+      maxPoolSize: 30
+      borrowConnectionTimeout: 60
+      reapTimeout: 20
+      maxIdleTime: 60
+      maintenanceInterval: 60
+      loginTimeout: 60
+      logWriter: 60
+      uniqueResourceName: aprimaryDataSource
+      xaDataSource: 
+        url: jdbc:mysql://192.168.3.13:3306/jfusion_schema?useUnicode=true&characterEncoding=utf-8&pinGlobalTxToPhysicalConnection=true&allowMultiQueries=true
+        username: root
+        password: sinux123
+        initialSize: 1
+        minIdle: 3
+        maxActive: 20
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        filters: stat
+    logDataSource: 
+      enable: true
+      uniqueResourceName: alogDataSource
+      xaDataSource: 
+        url: jdbc:oracle:thin:@192.168.3.8:1521:hxorcl
+        username: JFUSION
+        password: sinux123
+spring:
+  jmx:
+    enabled: true
+    server: mbeanServer
+    default-domain: com.sinux.beans
+    rmi: true
+    rmiPort: 10999
+
+jfusion:
+#  homeUrl: http://192.168.3.13:8086/modules/index/index.html
+  homeUrl: http://192.168.3.81:8080/modules/index/index.html
+  swagger:
+    enabled: true
+  cors:
+    allowedOrigins:
+      - http://127.0.0.1:1234
+      - http://127.0.0.1:1234
+#      - http://192.168.3.56:8081
+#      - http://localhost:8081
+  audit:
+    enabled: true
+  addon:
+    mongodb:
+      enabled: true
+      uri: mongodb://192.168.3.13:27017/local #//mongodb://[username:password@]host1[:port1]
+  three-administrator:
+    enabled:  true
+    securityRole:  security_role
+    systemRole: system_role
+    auditRole:  audit_role
+    superAdmin: admin
+  security:
+    csrf:
+      enabled:  false
+      #all custom
+      scope:  custom
+      # 是否每次请求完毕清除token 仅在scope为all时生效
+      remove:  true
+  syncTable:
+      enabled: true
+      moduleName: Portal
+      #远程调用超时
+      readTimeout: 5000
+      #远程链接超时
+      connectTimeout: 15000
+jfusion-ci:
+  enabled: false
+
+  gitconfig:
+      branch: development
+      acountName: heyong
+      password: 111111xSinux
+
+  components:
+      jfusion-test: http://heyong@192.168.3.11/platform/jfusion-test.git
+      jfusion-core: http://heyong@192.168.3.11/platform/jfusion-core.git
+      jfusion-gen: http://heyong@192.168.3.11/platform/jfusion-gen.git
+      jfusion-parent: http://heyong@192.168.3.11/platform/jfusion-parent.git
+
+  dependencies:
+      center: jfusion-core,jfusion-parent,jfusion-test
+      exclude: jfusion-parent,jfusion-test
+
+  mail:
+      serverhost: smtp.qq.com
+      serverport: 587
+      FromAddress: 2472460178@qq.com
+      account: 2472460178@qq.com
+      password: yyngbqyodciqdjci
+      theme: 代码上传测试影响报告
+  mvn:
+      command: test
+  parserxml: testng-results.xml,
+  localAddress: jfusionci
+
+#dms全局配置
+dms:
+  enabled: true
+  page: 1-1                                                         #//转换一页
+  toFormat: pdf                                                     #//转换后的格式
+  temp:                                                             #//转换借助的临时pdf文件
+    linux: /usr/tmp/temp.pdf
+    windows: C:\Users\heyong.SINUX\Desktop\temp.pdf
+  cmdDir:                                                           #//unoconv执行命令目录
+    linux: unoconv
+    windows: C:\Users\heyong.SINUX\Desktop\unoconv-0.7\bootstart.bat
+  user:
+    disk: 107374182400                                              #//100GB
+  threadSleep: 1000                                                 #dms线程休眠时长4秒
+  chunkSize: 10485760                                                #分段设置大小
+  enchunkSize: 10485768                                              #加密分段设置大小
+  version:
+    default: 5                                                    #默认允许版本数
+    max: 15                                                     #最大允许版本
+#redis配置
+redis: 
+  keyPrefix: jfusion
+  host: host
+  port: 6379
+#cas配置
+cas: 
+  enabled: false
+  #cas 服务端配置
+  server: 
+    #cas 服务器地址
+    serverUrlPrefix: http://192.168.3.13:8080/cas
+#ap 客户端配置
+client: 
+  #ap客户端访问地址
+  url: http://192.168.3.81:8080/a
+  #登录成功后回调地址
+  successUrl: http://192.168.3.81:8080/a?login
+#账户信息配置
+account: 
+  #密码配置项
+  password: 
+    #密码规则（标准正则表达式） 
+    regex: ^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,8}$
+    #有效期（小时）
+    expiry: 168
+    #密码过期提醒时间（小时）
+    remind: 48
+  #账号锁定信息
+  lockout:
+    #错误密码尝试次数
+    threshold: 3
+    #锁定时间
+    timeSeconds: 120

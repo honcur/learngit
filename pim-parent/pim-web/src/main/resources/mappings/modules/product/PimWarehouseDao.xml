@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sinux.modules.product.dao.PimWarehouseDao">
+    
+	<sql id="baseColumnList">
+						a.id AS "id",
+				a.warehouse_name AS "warehouseName",
+				a.warehouse_keeper_id AS "warehouseKeeperId",
+				a.warehouse_number AS "warehouseNumber",
+				a.is_available AS "isAvailable",
+				a.description AS "description",
+				a.create_by AS "createById",
+				a.create_date AS "createDate",
+				a.update_by AS "updateById",
+				a.update_date AS "updateDate"
+	</sql>
+	
+	<sql id="insertColumnList">
+						id,
+				warehouse_name,
+				warehouse_keeper_id,
+				warehouse_number,
+				is_available,
+				description,
+				create_by,
+				create_date,
+				update_by,
+				update_date
+	</sql>
+	
+	
+	<sql id="sql_of_where">
+		where 1=1
+				<if test="id != null"> 
+				AND a.id = #{id}
+				</if>
+				<if test="warehouseName != null"> 
+				AND a.warehouse_name = #{warehouseName}
+				</if>
+				<if test="warehouseKeeperId != null"> 
+				AND a.warehouse_keeper_id = #{warehouseKeeperId}
+				</if>
+				<if test="warehouseNumber != null"> 
+				AND a.warehouse_number = #{warehouseNumber}
+				</if>
+				<if test="isAvailable != null"> 
+				AND a.is_available = #{isAvailable}
+				</if>
+				<if test="description != null"> 
+				AND a.description = #{description}
+				</if>
+				<if test="createById != null"> 
+				AND a.create_by = #{createById}
+				</if>
+				<if test="createDate != null"> 
+				AND a.create_date = #{createDate}
+				</if>
+				<if test="updateById != null"> 
+				AND a.update_by = #{updateById}
+				</if>
+				<if test="updateDate != null"> 
+				AND a.update_date = #{updateDate}
+				</if>
+	</sql>
+	
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+        	AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+            	#{id}
+            </foreach>
+        </if>
+	</sql>
+	
+	<select id="select" parameterType="com.sinux.modules.product.entity.PimWarehouse" resultType="com.sinux.modules.product.entity.PimWarehouse" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_warehouse a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	
+	<select id="selectByExt" parameterType="com.sinux.modules.product.entity.ext.PimWarehouseExt" resultType="com.sinux.modules.product.entity.PimWarehouse" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_warehouse a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="com.sinux.modules.product.entity.PimWarehouse">
+		INSERT INTO pim_warehouse
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+					id,
+				</if>
+				<if test="warehouseName != null">
+					warehouse_name,
+				</if>
+				<if test="warehouseKeeperId != null">
+					warehouse_keeper_id,
+				</if>
+				<if test="warehouseNumber != null">
+					warehouse_number,
+				</if>
+				<if test="isAvailable != null">
+					is_available,
+				</if>
+				<if test="description != null">
+					description,
+				</if>
+				<if test="createById != null">
+					create_by,
+				</if>
+				<if test="createDate != null">
+					create_date,
+				</if>
+				<if test="updateById != null">
+					update_by,
+				</if>
+				<if test="updateDate != null">
+					update_date,
+				</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+			   		#{id},
+				</if>
+				<if test="warehouseName != null">
+			   		#{warehouseName},
+				</if>
+				<if test="warehouseKeeperId != null">
+			   		#{warehouseKeeperId},
+				</if>
+				<if test="warehouseNumber != null">
+			   		#{warehouseNumber},
+				</if>
+				<if test="isAvailable != null">
+			   		#{isAvailable},
+				</if>
+				<if test="description != null">
+			   		#{description},
+				</if>
+				<if test="createById != null">
+			   		#{createById},
+				</if>
+				<if test="createDate != null">
+			   		#{createDate},
+				</if>
+				<if test="updateById != null">
+			   		#{updateById},
+				</if>
+				<if test="updateDate != null">
+			   		#{updateDate},
+				</if>
+		</trim>
+	</insert>
+	
+	<insert id="insertBatch"  parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_warehouse
+		(
+		<include refid="insertColumnList"/>
+		)
+		<if test="dbName == 'mysql'">
+		values
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" separator=",">
+			(	
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseName != null">,#{item.warehouseName}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseKeeperId != null">,#{item.warehouseKeeperId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseNumber != null">,#{item.warehouseNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.isAvailable != null">,#{item.isAvailable}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.description != null">,#{item.description}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+			)
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" separator="union all">
+				(select 
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseName != null">,#{item.warehouseName}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseKeeperId != null">,#{item.warehouseKeeperId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.warehouseNumber != null">,#{item.warehouseNumber}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.isAvailable != null">,#{item.isAvailable}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.description != null">,#{item.description}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+				FROM DUAL
+				)
+			</foreach>
+			</if>
+		</if>
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimWarehouse">
+		update pim_warehouse
+		<set>
+					<if test="warehouseName != null" >
+	             		warehouse_name = #{warehouseName},
+	            	</if>
+					<if test="warehouseKeeperId != null" >
+	             		warehouse_keeper_id = #{warehouseKeeperId},
+	            	</if>
+					<if test="warehouseNumber != null" >
+	             		warehouse_number = #{warehouseNumber},
+	            	</if>
+					<if test="isAvailable != null" >
+	             		is_available = #{isAvailable},
+	            	</if>
+					<if test="description != null" >
+	             		description = #{description},
+	            	</if>
+					<if test="createById != null" >
+	             		create_by = #{createById},
+	            	</if>
+					<if test="createDate != null" >
+	             		create_date = #{createDate},
+	            	</if>
+					<if test="updateById != null" >
+	             		update_by = #{updateById},
+	            	</if>
+					<if test="updateDate != null" >
+	             		update_date = #{updateDate},
+	            	</if>
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateAllByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimWarehouse">
+		update pim_warehouse
+		<set>
+             		warehouse_name = #{warehouseName},
+             		warehouse_keeper_id = #{warehouseKeeperId},
+             		warehouse_number = #{warehouseNumber},
+             		is_available = #{isAvailable},
+             		description = #{description},
+             		create_by = #{createById},
+             		create_date = #{createDate},
+             		update_by = #{updateById},
+             		update_date = #{updateDate},
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateBatchByPrimaryKey"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_warehouse
+			<set>
+						<if test="item.warehouseName != null" >
+	             			warehouse_name = #{item.warehouseName},
+	            		</if>
+						<if test="item.warehouseKeeperId != null" >
+	             			warehouse_keeper_id = #{item.warehouseKeeperId},
+	            		</if>
+						<if test="item.warehouseNumber != null" >
+	             			warehouse_number = #{item.warehouseNumber},
+	            		</if>
+						<if test="item.isAvailable != null" >
+	             			is_available = #{item.isAvailable},
+	            		</if>
+						<if test="item.description != null" >
+	             			description = #{item.description},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_warehouse
+			<set>
+						<if test="item.warehouseName != null" >
+	             			warehouse_name = #{item.warehouseName},
+	            		</if>
+						<if test="item.warehouseKeeperId != null" >
+	             			warehouse_keeper_id = #{item.warehouseKeeperId},
+	            		</if>
+						<if test="item.warehouseNumber != null" >
+	             			warehouse_number = #{item.warehouseNumber},
+	            		</if>
+						<if test="item.isAvailable != null" >
+	             			is_available = #{item.isAvailable},
+	            		</if>
+						<if test="item.description != null" >
+	             			description = #{item.description},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<update id="deleteByLogic" parameterType="com.sinux.modules.product.entity.PimWarehouse">
+		update pim_warehouse set del_flag = '1' where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="deleteBatchByLogic"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_warehouse set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_warehouse set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<delete id="deleteByPrimaryKey" parameterType="com.sinux.modules.product.entity.PimWarehouse">
+		delete from pim_warehouse where 1=1
+				and id = #{id}
+    </delete>
+    
+    <delete id="deleteBatchByPrimaryKey" parameterType="java.util.List">
+		delete from pim_warehouse where 
+		<foreach collection="list" item="item" index="index" separator="or">
+		(
+				id = #{item.id}
+		)
+		</foreach>
+    </delete>
+    
+	<select id="get" parameterType="java.lang.String" resultType="com.sinux.modules.product.entity.PimWarehouse" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_warehouse a
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="get" parameterType="com.sinux.modules.product.entity.PimWarehouse" resultType="com.sinux.modules.product.entity.PimWarehouse" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_warehouse a
+		<include refid="sql_of_where" />
+	</select>
+	
+	<select id="findList" parameterType="com.sinux.modules.product.entity.PimWarehouse" resultType="com.sinux.modules.product.entity.PimWarehouse" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_warehouse a
+		<include refid="sql_of_where" />
+	</select>
+	
+	<select id="findAllList" parameterType="com.sinux.modules.product.entity.PimWarehouse" resultType="com.sinux.modules.product.entity.PimWarehouse" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_warehouse a WHERE 1=1
+	</select>
+	
+	<select id="findUniqueByProperty" resultType="com.sinux.modules.product.entity.PimWarehouse" statementType="STATEMENT">
+		SELECT
+		<include refid="baseColumnList"/>
+		FROM pim_warehouse  WHERE ${propertyName} = '${value}'
+	</select>
+	
+	<update id="update" parameterType="com.sinux.modules.product.entity.PimWarehouse">
+		update pim_warehouse
+		<set>
+					<if test="warehouseName != null" >
+	             		warehouse_name = #{warehouseName},
+	            	</if>
+					<if test="warehouseKeeperId != null" >
+	             		warehouse_keeper_id = #{warehouseKeeperId},
+	            	</if>
+					<if test="warehouseNumber != null" >
+	             		warehouse_number = #{warehouseNumber},
+	            	</if>
+					<if test="isAvailable != null" >
+	             		is_available = #{isAvailable},
+	            	</if>
+					<if test="description != null" >
+	             		description = #{description},
+	            	</if>
+					<if test="createById != null" >
+	             		create_by = #{createById},
+	            	</if>
+					<if test="createDate != null" >
+	             		create_date = #{createDate},
+	            	</if>
+					<if test="updateById != null" >
+	             		update_by = #{updateById},
+	            	</if>
+					<if test="updateDate != null" >
+	             		update_date = #{updateDate},
+	            	</if>
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="com.sinux.modules.product.entity.PimWarehouse">
+		delete from pim_warehouse where 1=1
+				and id = #{id}
+    </delete>
+    
+	<delete id="deleteAllData" >
+		delete from pim_warehouse
+    </delete>
+	
+</mapper>

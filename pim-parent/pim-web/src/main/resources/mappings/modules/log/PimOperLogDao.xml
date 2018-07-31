@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sinux.modules.log.dao.PimOperLogDao">
+    
+	<sql id="baseColumnList">
+						a.id AS "id",
+				a.user_id AS "userId",
+				a.oper_description AS "operDescription",
+				a.oper_content AS "operContent",
+				a.oper_type AS "operType",
+				a.oper_content_identify AS "operContentIdentify",
+				a.update_date AS "updateDate",
+				a.create_date AS "createDate",
+				a.update_by AS "updateById",
+				a.create_by AS "createById"
+	</sql>
+	
+	<sql id="insertColumnList">
+						id,
+				user_id,
+				oper_description,
+				oper_content,
+				oper_type,
+				oper_content_identify,
+				update_date,
+				create_date,
+				update_by,
+				create_by
+	</sql>
+	
+	
+	<sql id="sql_of_where">
+		where 1=1
+				<if test="id != null"> 
+				AND a.id = #{id}
+				</if>
+				<if test="userId != null"> 
+				AND a.user_id = #{userId}
+				</if>
+				<if test="operDescription != null"> 
+				AND a.oper_description = #{operDescription}
+				</if>
+				<if test="operContent != null"> 
+				AND a.oper_content = #{operContent}
+				</if>
+				<if test="operType != null"> 
+				AND a.oper_type = #{operType}
+				</if>
+				<if test="operContentIdentify != null"> 
+				AND a.oper_content_identify = #{operContentIdentify}
+				</if>
+				<if test="updateDate != null"> 
+				AND a.update_date = #{updateDate}
+				</if>
+				<if test="createDate != null"> 
+				AND a.create_date = #{createDate}
+				</if>
+				<if test="updateById != null"> 
+				AND a.update_by = #{updateById}
+				</if>
+				<if test="createById != null"> 
+				AND a.create_by = #{createById}
+				</if>
+	</sql>
+	
+	<sql id="sql_of_where_ext">
+		<include refid="sql_of_where" />
+		<if test="ids != null and ids.size > 0">
+        	AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+            	#{id}
+            </foreach>
+        </if>
+	</sql>
+	
+	<select id="select" parameterType="com.sinux.modules.log.entity.PimOperLog" resultType="com.sinux.modules.log.entity.PimOperLog" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_oper_log a
+		<include refid="sql_of_where" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	
+	<select id="selectByExt" parameterType="com.sinux.modules.log.entity.ext.PimOperLogExt" resultType="com.sinux.modules.log.entity.PimOperLog" >
+		SELECT 
+			<include refid="baseColumnList"/>
+		FROM pim_oper_log a
+		<include refid="sql_of_where_ext" />
+		<if test="page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="com.sinux.modules.log.entity.PimOperLog">
+		INSERT INTO pim_oper_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+					id,
+				</if>
+				<if test="userId != null">
+					user_id,
+				</if>
+				<if test="operDescription != null">
+					oper_description,
+				</if>
+				<if test="operContent != null">
+					oper_content,
+				</if>
+				<if test="operType != null">
+					oper_type,
+				</if>
+				<if test="operContentIdentify != null">
+					oper_content_identify,
+				</if>
+				<if test="updateDate != null">
+					update_date,
+				</if>
+				<if test="createDate != null">
+					create_date,
+				</if>
+				<if test="updateById != null">
+					update_by,
+				</if>
+				<if test="createById != null">
+					create_by,
+				</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="id != null">
+			   		#{id},
+				</if>
+				<if test="userId != null">
+			   		#{userId},
+				</if>
+				<if test="operDescription != null">
+			   		#{operDescription},
+				</if>
+				<if test="operContent != null">
+			   		#{operContent},
+				</if>
+				<if test="operType != null">
+			   		#{operType},
+				</if>
+				<if test="operContentIdentify != null">
+			   		#{operContentIdentify},
+				</if>
+				<if test="updateDate != null">
+			   		#{updateDate},
+				</if>
+				<if test="createDate != null">
+			   		#{createDate},
+				</if>
+				<if test="updateById != null">
+			   		#{updateById},
+				</if>
+				<if test="createById != null">
+			   		#{createById},
+				</if>
+		</trim>
+	</insert>
+	
+	<insert id="insertBatch"  parameterType="com.sinux.core.persistence.BatchEntity">
+		insert into pim_oper_log
+		(
+		<include refid="insertColumnList"/>
+		)
+		<if test="dbName == 'mysql'">
+		values
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" separator=",">
+			(	
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.userId != null">,#{item.userId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operDescription != null">,#{item.operDescription}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operContent != null">,#{item.operContent}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operType != null">,#{item.operType}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operContentIdentify != null">,#{item.operContentIdentify}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+			)
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+			<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" separator="union all">
+				(select 
+						<choose>  
+							<when test="item.id != null">#{item.id}</when>
+							<otherwise>null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.userId != null">,#{item.userId}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operDescription != null">,#{item.operDescription}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operContent != null">,#{item.operContent}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operType != null">,#{item.operType}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.operContentIdentify != null">,#{item.operContentIdentify}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateDate != null">,#{item.updateDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createDate != null">,#{item.createDate}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.updateById != null">,#{item.updateById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+						<choose>  
+							<when test="item.createById != null">,#{item.createById}</when>
+							<otherwise>,null</otherwise>
+						</choose>
+				FROM DUAL
+				)
+			</foreach>
+			</if>
+		</if>
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sinux.modules.log.entity.PimOperLog">
+		update pim_oper_log
+		<set>
+					<if test="userId != null" >
+	             		user_id = #{userId},
+	            	</if>
+					<if test="operDescription != null" >
+	             		oper_description = #{operDescription},
+	            	</if>
+					<if test="operContent != null" >
+	             		oper_content = #{operContent},
+	            	</if>
+					<if test="operType != null" >
+	             		oper_type = #{operType},
+	            	</if>
+					<if test="operContentIdentify != null" >
+	             		oper_content_identify = #{operContentIdentify},
+	            	</if>
+					<if test="updateDate != null" >
+	             		update_date = #{updateDate},
+	            	</if>
+					<if test="createDate != null" >
+	             		create_date = #{createDate},
+	            	</if>
+					<if test="updateById != null" >
+	             		update_by = #{updateById},
+	            	</if>
+					<if test="createById != null" >
+	             		create_by = #{createById},
+	            	</if>
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateAllByPrimaryKey" parameterType="com.sinux.modules.log.entity.PimOperLog">
+		update pim_oper_log
+		<set>
+             		user_id = #{userId},
+             		oper_description = #{operDescription},
+             		oper_content = #{operContent},
+             		oper_type = #{operType},
+             		oper_content_identify = #{operContentIdentify},
+             		update_date = #{updateDate},
+             		create_date = #{createDate},
+             		update_by = #{updateById},
+             		create_by = #{createById},
+		</set>
+		where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="updateBatchByPrimaryKey"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_oper_log
+			<set>
+						<if test="item.userId != null" >
+	             			user_id = #{item.userId},
+	            		</if>
+						<if test="item.operDescription != null" >
+	             			oper_description = #{item.operDescription},
+	            		</if>
+						<if test="item.operContent != null" >
+	             			oper_content = #{item.operContent},
+	            		</if>
+						<if test="item.operType != null" >
+	             			oper_type = #{item.operType},
+	            		</if>
+						<if test="item.operContentIdentify != null" >
+	             			oper_content_identify = #{item.operContentIdentify},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_oper_log
+			<set>
+						<if test="item.userId != null" >
+	             			user_id = #{item.userId},
+	            		</if>
+						<if test="item.operDescription != null" >
+	             			oper_description = #{item.operDescription},
+	            		</if>
+						<if test="item.operContent != null" >
+	             			oper_content = #{item.operContent},
+	            		</if>
+						<if test="item.operType != null" >
+	             			oper_type = #{item.operType},
+	            		</if>
+						<if test="item.operContentIdentify != null" >
+	             			oper_content_identify = #{item.operContentIdentify},
+	            		</if>
+						<if test="item.updateDate != null" >
+	             			update_date = #{item.updateDate},
+	            		</if>
+						<if test="item.createDate != null" >
+	             			create_date = #{item.createDate},
+	            		</if>
+						<if test="item.updateById != null" >
+	             			update_by = #{item.updateById},
+	            		</if>
+						<if test="item.createById != null" >
+	             			create_by = #{item.createById},
+	            		</if>
+			</set>
+			where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<update id="deleteByLogic" parameterType="com.sinux.modules.log.entity.PimOperLog">
+		update pim_oper_log set del_flag = '1' where 1=1
+				and id = #{id}
+	</update>
+	
+	<update id="deleteBatchByLogic"  parameterType="com.sinux.core.persistence.BatchEntity">
+		<if test="dbName == 'mysql'">
+		<if test="dataList != null and dataList.size > 0">
+		<foreach collection="dataList" item="item" index="index" open="" close="" separator=";">
+			update pim_oper_log set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+		<if test="dbName == 'oracle'">
+		<if test="dataList != null and dataList.size > 0">
+			<foreach collection="dataList" item="item" index="index" open="begin" close=";end;" separator=";">
+			update pim_oper_log set del_flag = '1' where 1=1
+					and id = #{item.id}
+		</foreach>
+		</if>
+		</if>
+	</update>
+	
+	<delete id="deleteByPrimaryKey" parameterType="com.sinux.modules.log.entity.PimOperLog">
+		delete from pim_oper_log where 1=1
+				and id = #{id}
+    </delete>
+    
+    <delete id="deleteBatchByPrimaryKey" parameterType="java.util.List">
+		delete from pim_oper_log where 
+		<foreach collection="list" item="item" index="index" separator="or">
+		(
+				id = #{item.id}
+		)
+		</foreach>
+    </delete>
+
+	<insert id="insertOperLog" parameterType="com.sinux.modules.log.entity.PimOperLog">
+		insert into pim_oper_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="operDescription != null">
+				oper_description,
+			</if>
+			<if test="operContent != null">
+				oper_content,
+			</if>
+			<if test="operType != null">
+				oper_type,
+			</if>
+			<if test="operContentIdentify != null">
+				oper_content_identify,
+			</if>
+			<if test="updateDate != null" >
+				update_date,
+			</if>
+			<if test="createDate != null" >
+				create_date,
+			</if>
+			<if test="updateById != null" >
+				update_by,
+			</if>
+			<if test="createById != null" >
+				create_by,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="userId != null">
+				#{userId},
+			</if>
+			<if test="operDescription != null">
+				#{operDescription},
+			</if>
+			<if test="operContent != null">
+				#{operContent},
+			</if>
+			<if test="operType != null">
+				#{operType},
+			</if>
+			<if test="operContentIdentify != null">
+				#{operContentIdentify},
+			</if>
+			<if test="updateDate != null" >
+				#{updateDate},
+			</if>
+			<if test="createDate != null" >
+				#{createDate},
+			</if>
+			<if test="updateById != null" >
+				#{updateById},
+			</if>
+			<if test="createById != null" >
+				#{createById},
+			</if>
+		</trim>
+	</insert>
+
+
+</mapper>
