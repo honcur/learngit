@@ -1,8 +1,7 @@
-/target/
-/tmlog.lck
-/tmlog26.log
-/pim-web/.settings/
-/src/main/webapp/*
+-/target/
+-/tmlog.lck
+-/tmlog26.log
+-/pim-web/.settings/
 .classpath
 .project
 tmlog.lck
