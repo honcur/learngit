@@ -56,7 +56,7 @@
             <id>test</id>
             <properties>
                 <profiles.active>test</profiles.active><!-- Tomcat7的部署url是manager/text Tomcat6没有/text -->
-                <deploy.url>http://192.168.3.13:8088/manager/text</deploy.url>
+                <deploy.url>http://127.0.0.1:8081/manager/text</deploy.url>
                 <tomcat.username>admin</tomcat.username>
                 <tomcat.password>admin</tomcat.password>
             </properties>
