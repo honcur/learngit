@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>修改数据</title>
+    <script src="/config/config.js"></script>
+    <script src="/common/jFusion.config.js"></script>
+    <script src="/common/commonFilesVar.js"></script>
+    <script src="/common/jFusionAdminApp.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/vendor/ueditor-1.4.3.3/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/vendor/ueditor-1.4.3.3/ueditor.all.js"> </script>
+
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="/vendor/ueditor-1.4.3.3/lang/zh-cn/zh-cn.js"></script>
+    <script src="/modules/sys/pimOfficeForm.js"></script>
+
+</head>
+<body class="editPageBg">
+    <div class="dicDial" ng-app="jFusionAdminApp" ng-controller="addFormCtrl">
+        <form class="form-horizontal" id="inputForm">
+            <div class="tab-pane js-contentDiv" ng-repeat="item in selectItem" ng-init="outerIndex = $index">
+	            <input type="hidden" class="js-id" ng-model="item.id" value="{{item.id}}" />
+                <table class="formTable">
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">parent_ids:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-parentIds" name="parentIds" ng-model="item.parentIds" value="{{item.parentIds}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">name:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-name" name="name" ng-model="item.name" value="{{item.name}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">sort:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-sort" name="sort" ng-model="item.sort" value="{{item.sort}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">area_id:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-areaId" name="areaId" ng-model="item.areaId" value="{{item.areaId}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">code:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-code" name="code" ng-model="item.code" value="{{item.code}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">type:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-type" name="type" ng-model="item.type" value="{{item.type}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">grade:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-grade" name="grade" ng-model="item.grade" value="{{item.grade}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">address:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-address" name="address" ng-model="item.address" value="{{item.address}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">zip_code:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-zipCode" name="zipCode" ng-model="item.zipCode" value="{{item.zipCode}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">master:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-master" name="master" ng-model="item.master" value="{{item.master}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">phone:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-phone" name="phone" ng-model="item.phone" value="{{item.phone}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">fax:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-fax" name="fax" ng-model="item.fax" value="{{item.fax}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">email:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-email" name="email" ng-model="item.email" value="{{item.email}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">useable:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-useable" name="useable" ng-model="item.useable" value="{{item.useable}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">primary_person:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-primaryPerson" name="primaryPerson" ng-model="item.primaryPerson" value="{{item.primaryPerson}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                   <tr>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">deputy_person:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-deputyPerson" name="deputyPerson" ng-model="item.deputyPerson" value="{{item.deputyPerson}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">remarks:</label>
+                        <div class="col-sm-8">
+                            <div class="field">
+                                <input type="text" class="form-control js-remarks" name="remarks" ng-model="item.remarks" value="{{item.remarks}}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                   </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

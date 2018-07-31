@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>pimSoftwareList测试页面</title>
+	<script src="/config/config.js"></script>
+	<script src="/common/jFusion.config.js"></script>
+    <script src="/common/commonFilesVar.js"></script>
+    <script src="/common/jFusionAdminApp.js"></script>
+    <script src="/modules/product/pimSoftwareList.js"></script>
+
+</head>
+
+<body class="listPage">
+    <div class="main plr0">
+        <div class="contentNr">
+            <div class="content-heading">
+              <span class="content-title">软件</span>
+            </div>
+            <div class="content-body">
+                <div class="menuBtnRow">
+                <!-- 下拉查询 -->
+                    <div class="row mb15">
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="control-label overflow-hidden pull-right" title="查询条件">查询条件:</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="dropdown js-queryConditionDropdown">
+                                        <button class="btn btn-default dropdown-toggle form-control js-queryConditionButton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="margin-left: 0px;" data-queryType="">
+                                            <span class="text"></span>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu js-queryConditionMenu" aria-labelledby="dropdownMenu1">
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5 js-inputValueArea">
+                                    <div class="row">
+                                        <div class="col-sm-8 js-inputValue">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="col-md-auto pull-right txtRight">
+                                                <button class="btn btn-default js-addQueryCondition" data-toggle="tooltip" data-placement="left" title="添加">
+                                                    <i class="fa fa-plus"></i> 添加
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="col-md-auto txtRight">
+                                        <button class="btn btn-default js-showQueryCondition" data-toggle="tooltip" data-placement="left" title="信息">
+                                            <i class="fa fa-search-plus"></i> 已添加条件
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group operationQuery pull-right col-md-auto">
+                                <button class="btn btn-system js-sortOrRefresh"><i class="fa fa-search"></i>查询</button>
+                                <button class="btn btn-system  js-refresh"><i class="fa fa-refresh"></i> 重置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-auto pull-right txtRight">
+                        <button class="btn btn-default  js-add" data-toggle="tooltip" data-placement="left" title="添加">
+                            <i class="fa fa-plus"></i> 添加
+                        </button>
+                        <button class="btn btn-default  js-edit" data-toggle="tooltip" data-placement="left" title="修改"><i class="fa fa-file-text-o"></i> 修改
+                        </button>
+                        <button class="btn btn-default  js-delete" data-toggle="tooltip" data-placement="left" title="删除"><i class="fa fa-trash-o"></i> 删除
+                        </button>
+                        <button class="btn btn-default  js-sortOrRefresh" data-toggle="tooltip" data-placement="left" title="刷新"><i class="glyphicon glyphicon-repeat"></i> 刷新
+                        </button>
+                    </div>
+                </div>
+                <!-- table start-->
+                <div class="mainContent">
+                    <table id="contentTable" class="mt20 display nowrap table table-striped table-bordered  table-hover table-condensed" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <label class="option mn">
+                                      <input class="js-select-all" type="checkbox">
+                                      <span class="checkbox mn"></span>
+                                    </label>
+                                </th>
+						               
+						               
+						               
+						               
+						               
+						               
+						               <th>创建时间</th>
+						               
+						               <th>修改时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+	
+</body>
+</html>
